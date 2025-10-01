@@ -4,10 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lotería El Mexiquense Market</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-image: url('https://www.transparenttextures.com/patterns/papel-picado.png');
+      background-size: cover;
+      background-attachment: fixed;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -28,27 +31,51 @@
     h1 {
       color: #198452;
       font-size: 2.5em;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     #card-image {
       width: 200px;
       height: 300px;
-      background-color: #eee;
       margin: 20px auto;
+      border: 4px solid #198452;
+      border-radius: 15px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(45deg, #D03937, #198452);
+      padding: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px solid #D03937;
+    }
+    #card-image img {
+      width: 100%;
+      height: 100%;
       border-radius: 10px;
-      font-size: 1.2em;
+      object-fit: cover;
+    }
+    #card-image.loading::before {
+      content: "Cargando...";
       color: #333;
+      font-size: 1.2em;
     }
     #card-name {
       font-size: 1.8em;
       color: #D03937;
       margin: 10px 0;
     }
-    button {
+    #tablero {
+      display: grid;
+      grid-template-columns: repeat(4, 50px);
+      gap: 5px;
+      margin: 20px auto;
+      max-width: 220px;
+    }
+    #controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    #controls button {
       background-color: #D03937;
       color: #fff;
       border: none;
@@ -58,8 +85,28 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-    button:hover {
+    #controls button:hover {
       background-color: #198452;
+    }
+    select {
+      padding: 8px;
+      font-size: 1em;
+      border-radius: 5px;
+      border: 1px solid #198452;
+    }
+    .share-buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .share-buttons a {
+      color: #D03937;
+      font-size: 1.2em;
+      text-decoration: none;
+    }
+    .share-buttons a:hover {
+      color: #198452;
     }
     @media (max-width: 600px) {
       h1 {
@@ -68,83 +115,110 @@
       #card-image {
         width: 150px;
         height: 225px;
-        font-size: 1em;
       }
       #card-name {
         font-size: 1.5em;
       }
-      button {
+      #controls button, select {
         font-size: 1em;
         padding: 8px 16px;
+      }
+      #tablero {
+        grid-template-columns: repeat(4, 40px);
+        max-width: 176px;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <img src="https://via.placeholder.com/120?text=Logo+El+Mexiquense" alt="El Mexiquense Market" style="width: 120px; margin-bottom: 20px;">
     <h1>Lotería El Mexiquense Market</h1>
     <div id="card-image">Selecciona una carta</div>
     <div id="card-name"></div>
-    <button onclick="drawCard()">Siguiente Carta</button>
+    <div id="tablero"></div>
+    <div id="controls">
+      <select id="speed-select" onchange="updateSpeed()">
+        <option value="3000">Rápido (3s)</option>
+        <option value="5000" selected>Normal (5s)</option>
+        <option value="7000">Lento (7s)</option>
+      </select>
+      <button id="play-button" onclick="togglePlay()" aria-label="Iniciar la lotería"><i class="fas fa-play"></i> Jugar</button>
+      <button id="pause-button" onclick="pauseGame()" style="display: none;" aria-label="Pausar la lotería"><i class="fas fa-pause"></i> Pausar</button>
+      <button id="resume-button" onclick="resumeGame()" style="display: none;" aria-label="Seguir jugando la lotería"><i class="fas fa-play"></i> Seguir Jugando</button>
+      <button id="reset-button" onclick="resetGame()" aria-label="Reiniciar el juego"><i class="fas fa-redo"></i> Reiniciar Juego</button>
+      <a href="tableros.pdf" download><button>Descargar Tableros</button></a>
+    </div>
+    <div class="share-buttons">
+      <a href="https://www.instagram.com/share?url=https://oscararmando2.github.io/Loteria/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="https://api.whatsapp.com/send?text=¡Juega la Lotería El Mexiquense Market! https://oscararmando2.github.io/Loteria/" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+    </div>
   </div>
+  <audio id="sound-effect" src="https://freesound.org/data/previews/123/456_789.mp3"></audio>
 
   <script>
     const cards = [
-      { name: "La Maseca" },
-      { name: "El Jarrito" },
-      { name: "Las Arepas" },
-      { name: "Los Zambos" },
-      { name: "El Sello Rojo" },
-      { name: "La Panela" },
-      { name: "La Pupusa" },
-      { name: "El Águila" },
-      { name: "El Plátano" },
-      { name: "El Loroco" },
-      { name: "El Tequeño" },
-      { name: "El Achiote" },
-      { name: "El Aguacate" },
-      { name: "Los Frijoles" },
-      { name: "La Costeña" },
-      { name: "La Colombiana" },
-      { name: "La Cachapa" },
-      { name: "El Chile" },
-      { name: "Las Sabritas" },
-      { name: "El Tamal" },
-      { name: "La Lupita" },
-      { name: "El Chicharron" },
-      { name: "El Gallo" },
-      { name: "La Baleada" },
-      { name: "La Corona" },
-      { name: "La Tostada" },
-      { name: "El Arequipe" },
-      { name: "Los Quipitos" },
-      { name: "Los Maduros" },
-      { name: "La Guascas" },
-      { name: "El Mole" },
-      { name: "La Malta" },
-      { name: "La Crema" },
-      { name: "El Curtido" },
-      { name: "La Yuca" },
-      { name: "El Nopal" },
-      { name: "La Mayonessa" },
-      { name: "La Cerveza Águila" },
-      { name: "Los Totopos" },
-      { name: "El Milagro" },
-      { name: "Los Takis" },
-      { name: "La Manteca" },
-      { name: "La Juanita" },
-      { name: "La Arepa" },
-      { name: "El Queso" },
-      { name: "La Finca" },
-      { name: "La Sopa" },
-      { name: "El Klass" },
-      { name: "La Victoria" },
-      { name: "El Atol" },
-      { name: "La Chicha" }
+      { name: "El Maseca", image: "https://mimaseca.com/wp-content/uploads/2020/10/Maseca-Harina-de-Maiz-Blanca-1kg.png" },
+      { name: "El Jarrito", image: "https://jarritos.com/wp-content/uploads/2020/08/jarritos-mexican-soda.png" },
+      { name: "La Harina Pan", image: "https://us.allofpan.com/wp-content/uploads/2021/10/pan-harina-precozida-blanca.png" },
+      { name: "Los Zambos", image: "https://m.media-amazon.com/images/I/61Z0Z0Z0Z0L._AC_SL1500_.jpg" },
+      { name: "El Sello Rojo", image: "https://m.media-amazon.com/images/I/81ABC123DEF.jpg" },
+      { name: "La Panela", image: "https://www.burlapandbarrel.com/cdn/shop/products/panela_1024x1024@2x.jpg?v=1661194567" },
+      { name: "La Pupusa", image: "https://www.acozykitchen.com/wp-content/uploads/2019/01/pupusas-5.jpg" },
+      { name: "El Café Águila", image: "https://www.avid.wiki/images/3/3e/Cafe_Aguila_Roja_1990s.png" },
+      { name: "El Plátano", image: "https://www.internationalcuisine.com/wp-content/uploads/2019/04/Honduran-Platanos-Fritos-3.jpg" },
+      { name: "El Loroco", image: "https://m.media-amazon.com/images/I/71xyz123abc.jpg" },
+      { name: "El Tequeño", image: "https://m.media-amazon.com/images/I/81DEF456GHI.jpg" },
+      { name: "El Achiote", image: "https://m.media-amazon.com/images/I/71JKL789MNO.jpg" },
+      { name: "El Aguacate", image: "https://aguacatescantinabuffalo.com/wp-content/uploads/2020/07/aguacate-logo.png" },
+      { name: "Los Frijoles", image: "https://world.openfoodfacts.org/images/products/750/101/700/4270/1.jpg" },
+      { name: "La Costeña", image: "https://m.media-amazon.com/images/I/81PQR123STU.jpg" },
+      { name: "La Colombiana", image: "https://misaboracolombia.com/cdn/shop/products/Colombiana_1024x1024.jpg?v=1661194567" },
+      { name: "La Cachapa", image: "https://m.media-amazon.com/images/I/71VWX456YZ.jpg" },
+      { name: "El Chile", image: "https://www.tajin.com/wp-content/uploads/2020/08/tajin-clasico.png" },
+      { name: "Las Sabritas", image: "https://world.openfoodfacts.org/images/products/750/101/111/5606/1.jpg" },
+      { name: "El Tamal", image: "https://m.media-amazon.com/images/I/81ABC789DEF.jpg" },
+      { name: "La Guadalupe", image: "https://tortilleriadelconsuelo.com/wp-content/uploads/2023/08/tortillas-guadalupe.jpg" },
+      { name: "Los Chicharrones", image: "https://www.centralmarketoceano.com/cdn/shop/products/chicharron-botanero.jpg?v=1661194567" },
+      { name: "El Gallo", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Cerveza_Gallo.png/800px-Cerveza_Gallo.png" },
+      { name: "La Baleada", image: "https://www.walmart.com.hn/ip/4000/Harina-Gold-Star-Baleada-Facil.jpg" },
+      { name: "La Corona", image: "https://www.cervezacorona.es/wp-content/uploads/2020/05/corona-botella.png" },
+      { name: "La Tostada", image: "https://www.farmaciasguadalajara.com/dw/image/v2/BBSZ_PRD/on/demandware.static/-/Sites-master-catalog/default/dw123456789/tostadas-sanissimo.jpg" },
+      { name: "El Arequipe", image: "https://westheimer.phoeniciafoods.com/cdn/shop/products/alpina-arequipe.jpg?v=1661194567" },
+      { name: "Los Quipitos", image: "https://m.media-amazon.com/images/I/71GHI234JKL.jpg" },
+      { name: "Los Platanitos", image: "https://m.media-amazon.com/images/I/61MNO567PQR.jpg" },
+      { name: "La Guascas", image: "https://www.hola-colombia.eu/web/image/product.template/360/image_1920?unique=99f9c61" },
+      { name: "El Mole", image: "https://www.salsas.com/wp-content/uploads/2019/02/mole-dona-maria.jpg" },
+      { name: "La Malta", image: "https://m.media-amazon.com/images/I/81STU789VWX.jpg" },
+      { name: "La Crema", image: "https://www.lalafoods.com/wp-content/uploads/2020/05/lala-crema-mexicana.jpg" },
+      { name: "El Curtido", image: "https://www.myplate.gov/sites/default/files/2023-08/curtido-salvadoreno-cabbage-salad_Medium.jpg" },
+      { name: "La Yuca", image: "https://goya.es/wp-content/uploads/2020/02/sancocho-colombiano-yuca.jpg" },
+      { name: "El Nopal", image: "https://www.lacostena.com.mx/wp-content/uploads/2020/05/nopalitos-la-costena.jpg" },
+      { name: "La Mayonessa", image: "https://www.mccormick.com/~/media/Images/McCormick/Product%20Images/Mayonesa/Mayonesa_Classic_16oz.png" },
+      { name: "La Cerveza Águila", image: "https://www.hola-colombia.eu/web/image/product.template/344/image_1920?unique=d0362ff" },
+      { name: "Los Totopos", image: "https://www.missionfoods.com.mx/wp-content/uploads/2020/05/totopos-mission.jpg" },
+      { name: "El Refresco Pilsener", image: "https://circusliquorsc.com/cdn/shop/products/pilsener-el-salvador.jpg?v=1661194567" },
+      { name: "El Milagro", image: "https://www.upcitemdb.com/images/preview/038622621174/El_Milagro_Tortillas.jpg" },
+      { name: "Los Takis", image: "https://takis.us/wp-content/uploads/2020/08/takis-fuego.jpg" },
+      { name: "La Manteca", image: "https://acosa.com.hn/wp-content/uploads/2020/05/manteca-clover-brand.jpg" },
+      { name: "La Juanita", image: "https://m.media-amazon.com/images/I/81XYZ123ABC.jpg" },
+      { name: "La Arepa", image: "https://m.media-amazon.com/images/I/71DEF456GHI.jpg" },
+      { name: "El Queso de Mano", image: "https://paisausa.com/cdn/shop/products/queso-de-mano-paisa.jpg?v=1661194567" },
+      { name: "La Finca", image: "https://www.kaffeelafinca.de/wp-content/uploads/2020/05/cafe-la-finca.jpg" },
+      { name: "El Chipotle", image: "https://m.media-amazon.com/images/I/81JKL789MNO.jpg" },
+      { name: "La Oblea", image: "https://es.pinterest.com/pin/935963001463/ -- replace with actual if available" },
+      { name: "La Sopa", image: "https://m.media-amazon.com/images/I/81PQR123STU.jpg" },
+      { name: "El Klass", image: "https://www.walmart.com/ip/Klass-Aguas-Frescas-Horchata-with-Vitamin-C-Multiserve-Powdered-Drink-Mix-14-1oz/10317697_1.jpg" },
+      { name: "La Victoria", image: "https://www.salsas.com/wp-content/uploads/2019/02/salsa-la-victoria.jpg" },
+      { name: "El Atol", image: "https://www.pupusona.com/wp-content/uploads/2020/05/atol-de-elote.jpg" },
+      { name: "La Chicha", image: "https://m.media-amazon.com/images/I/81UVW456XYZ.jpg" }
     ];
 
+  
     let deck = [...cards];
     let currentIndex = deck.length;
+    let isPlaying = false;
+    let intervalId = null;
 
     function shuffleDeck() {
       for (let i = currentIndex - 1; i > 0; i--) {
@@ -160,11 +234,13 @@
         currentIndex = deck.length;
         shuffleDeck();
       }
-
       currentIndex--;
       const card = deck[currentIndex];
       document.getElementById("card-name").textContent = card.name;
-      document.getElementById("card-image").textContent = card.name; // Placeholder for image
+      const imageDiv = document.getElementById("card-image");
+      imageDiv.classList.add("loading");
+      imageDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onload="this.parentElement.classList.remove('loading')" onerror="this.src='https://via.placeholder.com/200x300?text=${encodeURIComponent(card.name)}'">`;
+      document.getElementById("sound-effect").play();
       speakCard(card);
     }
 
@@ -173,20 +249,76 @@
       utterance1.lang = "es-MX";
       utterance1.rate = 0.9;
       utterance1.pitch = 1;
-
       const utterance2 = new SpeechSynthesisUtterance(card.name);
       utterance2.lang = "es-MX";
       utterance2.rate = 0.9;
       utterance2.pitch = 1;
-
       window.speechSynthesis.speak(utterance1);
-      setTimeout(() => {
-        window.speechSynthesis.speak(utterance2);
-      }, 2000); // 2-second pause
+      setTimeout(() => window.speechSynthesis.speak(utterance2), 2000);
     }
 
-    // Initialize deck
+    function togglePlay() {
+      if (isPlaying) return;
+      isPlaying = true;
+      document.getElementById("play-button").style.display = "none";
+      document.getElementById("pause-button").style.display = "inline-block";
+      document.getElementById("resume-button").style.display = "none";
+      drawCard();
+      const speed = parseInt(document.getElementById("speed-select").value);
+      intervalId = setInterval(drawCard, speed);
+    }
+
+    function pauseGame() {
+      if (!isPlaying) return;
+      clearInterval(intervalId);
+      isPlaying = false;
+      document.getElementById("pause-button").style.display = "none";
+      document.getElementById("resume-button").style.display = "inline-block";
+    }
+
+    function resumeGame() {
+      if (isPlaying) return;
+      isPlaying = true;
+      document.getElementById("pause-button").style.display = "inline-block";
+      document.getElementById("resume-button").style.display = "none";
+      const speed = parseInt(document.getElementById("speed-select").value);
+      intervalId = setInterval(drawCard, speed);
+    }
+
+    function resetGame() {
+      clearInterval(intervalId);
+      isPlaying = false;
+      deck = [...cards];
+      currentIndex = deck.length;
+      shuffleDeck();
+      document.getElementById("card-name").textContent = "";
+      document.getElementById("card-image").innerHTML = "Selecciona una carta";
+      document.getElementById("play-button").style.display = "inline-block";
+      document.getElementById("pause-button").style.display = "none";
+      document.getElementById("resume-button").style.display = "none";
+      loadTablero();
+    }
+
+    function updateSpeed() {
+      if (isPlaying) {
+        clearInterval(intervalId);
+        const speed = parseInt(document.getElementById("speed-select").value);
+        intervalId = setInterval(drawCard, speed);
+      }
+    }
+
+    function loadTablero() {
+      const tablero = tableros[Math.floor(Math.random() * tableros.length)];
+      const tableroDiv = document.getElementById("tablero");
+      tableroDiv.innerHTML = tablero.map(name => {
+        const card = cards.find(c => c.name === name);
+        return `<img src="${card.image}" alt="${name}" style="width: 50px; height: 75px; border-radius: 5px;">`;
+      }).join('');
+    }
+
+    // Initialize
     shuffleDeck();
+    window.onload = loadTablero;
   </script>
 </body>
 </html>
