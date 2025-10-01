@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lotería Yeyas</title>
+  <title>Lotería El Mexiquense Market</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
@@ -132,7 +132,8 @@
 </head>
 <body>
   <div class="container">
-    <h1>Yeyas Loteria</h1>
+    <img src="imagenes/logo.png" alt="El Mexiquense Market" style="width: 120px; margin-bottom: 20px;">
+    <h1>Lotería El Mexiquense Market</h1>
     <div id="card-image">Selecciona una carta</div>
     <div id="card-name"></div>
     <div id="tablero"></div>
@@ -157,59 +158,75 @@
 
   <script>
     const cards = [
-      { name: "La Maseca", image: "https://mimaseca.com/wp-content/uploads/2020/10/Maseca-Harina-de-Maiz-Blanca-1kg.png" },
-      { name: "El Jarrito", image: "https://jarritos.com/wp-content/uploads/2020/08/jarritos-mexican-soda.png" },
-      { name: "Las Arepas", image: "https://us.allofpan.com/wp-content/uploads/2021/10/pan-harina-precozida-blanca.png" },
-      { name: "Los Zambos", image: "https://m.media-amazon.com/images/I/61Z0Z0Z0Z0L._AC_SL1500_.jpg" },
-      { name: "El Sello Rojo", image: "https://m.media-amazon.com/images/I/81ABC123DEF.jpg" },
-      { name: "La Panela", image: "https://www.burlapandbarrel.com/cdn/shop/products/panela_1024x1024@2x.jpg?v=1661194567" },
-      { name: "La Pupusa", image: "https://www.acozykitchen.com/wp-content/uploads/2019/01/pupusas-5.jpg" },
-      { name: "El Águila", image: "https://www.avid.wiki/images/3/3e/Cafe_Aguila_Roja_1990s.png" },
-      { name: "El Plátano", image: "https://www.internationalcuisine.com/wp-content/uploads/2019/04/Honduran-Platanos-Fritos-3.jpg" },
-      { name: "El Loroco", image: "https://m.media-amazon.com/images/I/71xyz123abc.jpg" },
-      { name: "El Tequeño", image: "https://m.media-amazon.com/images/I/81DEF456GHI.jpg" },
-      { name: "El Achiote", image: "https://m.media-amazon.com/images/I/71JKL789MNO.jpg" },
-      { name: "El Aguacate", image: "https://private-user-images.githubusercontent.com/222715193/496363291-5d596424-c0b6-4917-9876-84664fde1ecd.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTkzNTE2MjMsIm5iZiI6MTc1OTM1MTMyMywicGF0aCI6Ii8yMjI3MTUxOTMvNDk2MzYzMjkxLTVkNTk2NDI0LWMwYjYtNDkxNy05ODc2LTg0NjY0ZmRlMWVjZC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAwMVQyMDQyMDNaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT01YzEyZGQ1YTFkYTg2M2IwYTdlZWNjZjgzNGUwZmVjNTAxODU2MTA4MDJmYTcyZTc0NTgyNDk3OGRkZDlhNWM1JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.zRVFPl_ljVG__Jo_9JkwepyisTpZkR3e0vkyiAv9By8" },
-      { name: "Los Frijoles", image: "https://world.openfoodfacts.org/images/products/750/101/700/4270/1.jpg" },
-      { name: "La Costeña", image: "https://m.media-amazon.com/images/I/81PQR123STU.jpg" },
-      { name: "La Colombiana", image: "https://misaboracolombia.com/cdn/shop/products/Colombiana_1024x1024.jpg?v=1661194567" },
-      { name: "La Cachapa", image: "https://m.media-amazon.com/images/I/71VWX456YZ.jpg" },
-      { name: "El Chile", image: "https://www.tajin.com/wp-content/uploads/2020/08/tajin-clasico.png" },
-      { name: "Las Sabritas", image: "https://world.openfoodfacts.org/images/products/750/101/111/5606/1.jpg" },
-      { name: "El Tamal", image: "https://m.media-amazon.com/images/I/81ABC789DEF.jpg" },
-      { name: "La Lupita", image: "https://tortilleriadelconsuelo.com/wp-content/uploads/2023/08/tortillas-guadalupe.jpg" },
-      { name: "El Chicharron", image: "https://www.centralmarketoceano.com/cdn/shop/products/chicharron-botanero.jpg?v=1661194567" },
-      { name: "El Gallo", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Cerveza_Gallo.png/800px-Cerveza_Gallo.png" },
-      { name: "La Baleada", image: "https://www.walmart.com.hn/ip/4000/Harina-Gold-Star-Baleada-Facil.jpg" },
-      { name: "La Corona", image: "https://www.cervezacorona.es/wp-content/uploads/2020/05/corona-botella.png" },
-      { name: "Las Charras", image: "https://www.farmaciasguadalajara.com/dw/image/v2/BBSZ_PRD/on/demandware.static/-/Sites-master-catalog/default/dw123456789/tostadas-sanissimo.jpg" },
-      { name: "El Arequipe", image: "https://westheimer.phoeniciafoods.com/cdn/shop/products/alpina-arequipe.jpg?v=1661194567" },
-      { name: "Los Quipitos", image: "https://m.media-amazon.com/images/I/71GHI234JKL.jpg" },
-      { name: "Los Maduros", image: "https://m.media-amazon.com/images/I/61MNO567PQR.jpg" },
-      { name: "La Guascas", image: "https://www.hola-colombia.eu/web/image/product.template/360/image_1920?unique=99f9c61" },
-      { name: "El Mole", image: "https://www.salsas.com/wp-content/uploads/2019/02/mole-dona-maria.jpg" },
-      { name: "La Malta", image: "https://m.media-amazon.com/images/I/81STU789VWX.jpg" },
-      { name: "La Crema", image: "https://www.lalafoods.com/wp-content/uploads/2020/05/lala-crema-mexicana.jpg" },
-      { name: "El Curtido", image: "https://www.myplate.gov/sites/default/files/2023-08/curtido-salvadoreno-cabbage-salad_Medium.jpg" },
-      { name: "La Yuca", image: "https://goya.es/wp-content/uploads/2020/02/sancocho-colombiano-yuca.jpg" },
-      { name: "El Nopal", image: "https://www.lacostena.com.mx/wp-content/uploads/2020/05/nopalitos-la-costena.jpg" },
-      { name: "La Mayo", image: "https://www.mccormick.com/~/media/Images/McCormick/Product%20Images/Mayonesa/Mayonesa_Classic_16oz.png" },
-      { name: "Los Totopos", image: "https://www.missionfoods.com.mx/wp-content/uploads/2020/05/totopos-mission.jpg" },
-      { name: "El Milagro", image: "https://www.upcitemdb.com/images/preview/038622621174/El_Milagro_Tortillas.jpg" },
-      { name: "Los Takis", image: "https://takis.us/wp-content/uploads/2020/08/takis-fuego.jpg" },
-      { name: "La Manteca", image: "https://acosa.com.hn/wp-content/uploads/2020/05/manteca-clover-brand.jpg" },
-      { name: "La Juanita", image: "https://m.media-amazon.com/images/I/81XYZ123ABC.jpg" },
-      { name: "La Arepa", image: "https://m.media-amazon.com/images/I/71DEF456GHI.jpg" },
-      { name: "El Queso", image: "https://paisausa.com/cdn/shop/products/queso-de-mano-paisa.jpg?v=1661194567" },
-      { name: "La Finca", image: "https://www.kaffeelafinca.de/wp-content/uploads/2020/05/cafe-la-finca.jpg" },
-      { name: "La Sopa", image: "https://m.media-amazon.com/images/I/81PQR123STU.jpg" },
-      { name: "El Klass", image: "https://www.walmart.com/ip/Klass-Aguas-Frescas-Horchata-with-Vitamin-C-Multiserve-Powdered-Drink-Mix-14-1oz/10317697_1.jpg" },
-      { name: "La Victoria", image: "https://www.salsas.com/wp-content/uploads/2019/02/salsa-la-victoria.jpg" },
-      { name: "El Atol", image: "https://www.pupusona.com/wp-content/uploads/2020/05/atol-de-elote.jpg" },
-      { name: "La Chicha", image: "https://m.media-amazon.com/images/I/81UVW456XYZ.jpg" }
+      { name: "El Maseca", image: "imagenes/la maseca.png" },
+      { name: "El Jarrito", image: "imagenes/los jarritos.png" },
+      { name: "La Harina Pan", image: "imagenes/las arepas.png" },
+      { name: "Los Zambos", image: "imagenes/los zambos.png" },
+      { name: "El Sello Rojo", image: "imagenes/el sello rojo.png" },
+      { name: "La Panela", image: "imagenes/la panela.png" },
+      { name: "La Pupusa", image: "imagenes/la pupusa.png" },
+      { name: "El Café Águila", image: "imagenes/el aguila.png" },
+      { name: "El Plátano", image: "imagenes/el platano.png" },
+      { name: "El Loroco", image: "imagenes/el loroco.png" },
+      { name: "El Tequeño", image: "imagenes/el tequeño.png" },
+      { name: "El Achiote", image: "imagenes/el achiote.png" },
+      { name: "El Aguacate", image: "imagenes/el aguacate.png" },
+      { name: "Los Frijoles", image: "imagenes/los frijoles.png" },
+      { name: "La Costeña", image: "imagenes/la costeña.png" },
+      { name: "La Colombiana", image: "imagenes/colombiana.png" },
+      { name: "La Cachapa", image: "imagenes/las cachapas.png" },
+      { name: "El Chile", image: "imagenes/el chile.png" },
+      { name: "Las Sabritas", image: "imagenes/las sabritas.png" },
+      { name: "El Tamal", image: "imagenes/el tamal.png" },
+      { name: "La Guadalupe", image: "imagenes/la lupita.png" },
+      { name: "Los Chicharrones", image: "imagenes/el chicharon.png" },
+      { name: "El Gallo", image: "imagenes/el gallo.png" },
+      { name: "La Baleada", image: "imagenes/la baleada.png" },
+      { name: "La Corona", image: "imagenes/la corona.png" },
+      { name: "La Tostada", image: "imagenes/las charras.png" },
+      { name: "El Arequipe", image: "imagenes/el arequipe.png" },
+      { name: "Los Quipitos", image: "imagenes/los quipitos.png" },
+      { name: "Los Platanitos", image: "imagenes/los maduros.png" },
+      { name: "La Guascas", image: "imagenes/las guascas.png" },
+      { name: "El Mole", image: "imagenes/el mole.png" },
+      { name: "La Malta", image: "imagenes/la malta.png" },
+      { name: "La Crema", image: "imagenes/crema.png" },
+      { name: "El Curtido", image: "imagenes/curtido.png" },
+      { name: "La Yuca", image: "imagenes/yuca.png" },
+      { name: "El Nopal", image: "imagenes/nopal.png" },
+      { name: "La Mayonessa", image: "imagenes/mayonessa.png" },
+      { name: "La Cerveza Águila", image: "imagenes/cerveza_aguila.png" },
+      { name: "Los Totopos", image: "imagenes/totopos.png" },
+      { name: "El Refresco Pilsener", image: "imagenes/pilsener.png" },
+      { name: "El Milagro", image: "imagenes/milagro.png" },
+      { name: "Los Takis", image: "imagenes/takis.png" },
+      { name: "La Manteca", image: "imagenes/manteca.png" },
+      { name: "La Juanita", image: "imagenes/juanita.png" },
+      { name: "La Arepa", image: "imagenes/arepa.png" },
+      { name: "El Queso de Mano", image: "imagenes/queso_de_mano.png" },
+      { name: "La Finca", image: "imagenes/finca.png" },
+      { name: "El Chipotle", image: "imagenes/chipotle.png" },
+      { name: "La Oblea", image: "imagenes/oblea.png" },
+      { name: "La Sopa", image: "imagenes/sopa.png" },
+      { name: "El Klass", image: "imagenes/klass.png" },
+      { name: "La Victoria", image: "imagenes/victoria.png" },
+      { name: "El Atol", image: "imagenes/atol.png" },
+      { name: "La Chicha", image: "imagenes/chicha.png" }
     ];
 
-  
+    const tableros = [
+      ["El Maseca", "La Harina Pan", "El Aguacate", "La Costeña", "Los Zambos", "El Café Águila", "La Colombiana", "La Pupusa", "Las Sabritas", "La Guadalupe", "El Gallo", "La Corona", "Los Quipitos", "La Mayonessa", "El Milagro", "Los Takis"],
+      ["La Juanita", "La Finca", "La Sopa", "El Klass", "La Victoria", "El Atol", "La Chicha", "El Sello Rojo", "La Panela", "El Plátano", "El Loroco", "El Tequeño", "El Achiote", "Los Frijoles", "La Cachapa", "El Chile"],
+      ["El Tamal", "Los Chicharrones", "La Baleada", "El Queso de Mano", "La Tostada", "El Arequipe", "Los Platanitos", "La Guascas", "El Mole", "La Malta", "La Crema", "El Curtido", "La Yuca", "El Nopal", "La Cerveza Águila", "Los Totopos"],
+      ["El Refresco Pilsener", "Los Takis", "La Manteca", "La Juanita", "La Arepa", "La Finca", "La Sopa", "El Klass", "La Victoria", "El Atol", "La Chicha", "El Maseca", "La Harina Pan", "El Aguacate", "La Costeña", "Los Zambos"],
+      ["El Café Águila", "La Colombiana", "La Pupusa", "Las Sabritas", "La Guadalupe", "El Gallo", "La Corona", "Los Quipitos", "La Mayonessa", "El Milagro", "Los Takis", "La Juanita", "La Finca", "La Sopa", "El Klass", "La Victoria"],
+      ["El Atol", "La Chicha", "El Sello Rojo", "La Panela", "El Plátano", "El Loroco", "El Tequeño", "El Achiote", "Los Frijoles", "La Cachapa", "El Chile", "El Tamal", "Los Chicharrones", "La Baleada", "El Queso de Mano", "La Tostada"],
+      ["El Arequipe", "Los Platanitos", "La Guascas", "El Mole", "La Malta", "La Crema", "El Curtido", "La Yuca", "El Nopal", "La Cerveza Águila", "Los Totopos", "El Refresco Pilsener", "Los Takis", "La Manteca", "La Juanita", "La Finca"],
+      ["La Sopa", "El Klass", "La Victoria", "El Atol", "La Chicha", "El Maseca", "La Harina Pan", "El Aguacate", "La Costeña", "Los Zambos", "El Café Águila", "La Colombiana", "La Pupusa", "Las Sabritas", "La Guadalupe", "El Gallo"],
+      ["La Corona", "Los Quipitos", "La Mayonessa", "El Milagro", "Los Takis", "La Juanita", "La Finca", "La Sopa", "El Klass", "La Victoria", "El Atol", "La Chicha", "El Sello Rojo", "La Panela", "El Plátano", "El Loroco"],
+      ["El Tequeño", "El Achiote", "Los Frijoles", "La Cachapa", "El Chile", "El Tamal", "Los Chicharrones", "La Baleada", "El Queso de Mano", "La Tostada", "El Arequipe", "Los Platanitos", "La Guascas", "El Mole", "La Malta", "La Crema"]
+    ];
+
     let deck = [...cards];
     let currentIndex = deck.length;
     let isPlaying = false;
