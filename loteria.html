@@ -158,9 +158,9 @@
 
   <script>
     const cards = [
-      { name: "La Maseca", image: "imagenes/la maseca.png" },
-      { name: "El Jarrito", image: "imagenes/los jarritos.png" },
-      { name: "La Harina Pan", image: "imagenes/las arepas.png" },
+      { name: "EL ACHIOTE", image: "https://private-user-images.githubusercontent.com/222715193/496363292-9c0c0ef5-9086-4a1b-9dd1-071ffaac7f08.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTkzNTMyNTQsIm5iZiI6MTc1OTM1Mjk1NCwicGF0aCI6Ii8yMjI3MTUxOTMvNDk2MzYzMjkyLTljMGMwZWY1LTkwODYtNGExYi05ZGQxLTA3MWZmYWFjN2YwOC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAwMVQyMTA5MTRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT01YmQzMDQ3NWU2NDQ3MmI5YzU4YWVkMmRmZTQ4M2ZmZGMyYjFkNjhhMjE2NjI0ZDgxMGUzZjBmYTc4MGUzN2E1JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.V1Fnkk1PDNaCQv-oAKkIHTQ7ychfAFhY-8aZCN7QO0w" },
+      { name: "LOS JARRITOS", image: "https://private-user-images.githubusercontent.com/222715193/496363297-bcdc8118-259b-4244-9adc-d9c41d5e24be.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTkzNTMyNTQsIm5iZiI6MTc1OTM1Mjk1NCwicGF0aCI6Ii8yMjI3MTUxOTMvNDk2MzYzMjk3LWJjZGM4MTE4LTI1OWItNDI0NC05YWRjLWQ5YzQxZDVlMjRiZS5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAwMVQyMTA5MTRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1kNjA5YzM4NjU2Y2M1ZGMzMmVmZmMxOGMxNTk4ZTZhNTQ1NGI3YTM0ZTY5ZmMwYTVmNDI2YzcxNTE2MTJiZTdjJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.f0KyNlWYprgZt-DpqcMtFeiT5pmYa5QbpF6gT6eaWg0" },
+      { name: "LA AREPA", image: "https://private-user-images.githubusercontent.com/222715193/496363339-469c01df-725d-4fc0-8132-cee4da6c9467.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTkzNTMyNTQsIm5iZiI6MTc1OTM1Mjk1NCwicGF0aCI6Ii8yMjI3MTUxOTMvNDk2MzYzMzM5LTQ2OWMwMWRmLTcyNWQtNGZjMC04MTMyLWNlZTRkYTZjOTQ2Ny5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAwMVQyMTA5MTRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT00ZTQ4ZWI4YWE3Yzc4MTQ2MWVjNjdmOTZmZDA2ODA2NjgxZDk1NTFlMzljYzlkZGM4N2VmMjEzMjk0MGUwNjhhJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.Nl1dVbXqbxzNLT23eqekhEJTIK8Z3WqliMRwYqNOcDY" },
       { name: "Los Zambos", image: "imagenes/los zambos.png" },
       { name: "El Sello Rojo", image: "imagenes/el sello rojo.png" },
       { name: "La Panela", image: "imagenes/la panela.png" },
@@ -170,7 +170,7 @@
       { name: "El Loroco", image: "imagenes/el loroco.png" },
       { name: "El Tequeño", image: "imagenes/el tequeño.png" },
       { name: "El Achiote", image: "imagenes/el achiote.png" },
-      { name: "El Aguacate", image: "imagenes/el aguacate.png" },
+      { name: "El Aguacate", image: "https://private-user-images.githubusercontent.com/222715193/496363291-5d596424-c0b6-4917-9876-84664fde1ecd.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTkzNTMyNTQsIm5iZiI6MTc1OTM1Mjk1NCwicGF0aCI6Ii8yMjI3MTUxOTMvNDk2MzYzMjkxLTVkNTk2NDI0LWMwYjYtNDkxNy05ODc2LTg0NjY0ZmRlMWVjZC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjUxMDAxJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI1MTAwMVQyMTA5MTRaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT03Y2U4ZTNhMjM0NzdlNWQ3OGU4Y2M0NTk5ZmViZWViYzIxNTVhMDhkMDAxOTk3OWE3MmE5ZDE5MmJlMWFiMzY0JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.2b3D5C-sNi4RIs5OkaRfYJMOQTr_Tdm_4lUetjZ33hU" },
       { name: "Los Frijoles", image: "imagenes/los frijoles.png" },
       { name: "La Costeña", image: "imagenes/la costeña.png" },
       { name: "La Colombiana", image: "imagenes/colombiana.png" },
