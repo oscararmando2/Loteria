@@ -132,8 +132,7 @@
 </head>
 <body>
   <div class="container">
-    <img src="https://via.placeholder.com/120?text=Logo+El+Mexiquense" alt="El Mexiquense Market" style="width: 120px; margin-bottom: 20px;">
-    <h1>Lotería El Mexiquense Market</h1>
+    <h1>Yeyas Loteria</h1>
     <div id="card-image">Selecciona una carta</div>
     <div id="card-name"></div>
     <div id="tablero"></div>
@@ -158,14 +157,14 @@
 
   <script>
     const cards = [
-      { name: "El Maseca", image: "https://mimaseca.com/wp-content/uploads/2020/10/Maseca-Harina-de-Maiz-Blanca-1kg.png" },
+      { name: "La Maseca", image: "https://mimaseca.com/wp-content/uploads/2020/10/Maseca-Harina-de-Maiz-Blanca-1kg.png" },
       { name: "El Jarrito", image: "https://jarritos.com/wp-content/uploads/2020/08/jarritos-mexican-soda.png" },
-      { name: "La Harina Pan", image: "https://us.allofpan.com/wp-content/uploads/2021/10/pan-harina-precozida-blanca.png" },
+      { name: "Las Arepas", image: "https://us.allofpan.com/wp-content/uploads/2021/10/pan-harina-precozida-blanca.png" },
       { name: "Los Zambos", image: "https://m.media-amazon.com/images/I/61Z0Z0Z0Z0L._AC_SL1500_.jpg" },
       { name: "El Sello Rojo", image: "https://m.media-amazon.com/images/I/81ABC123DEF.jpg" },
       { name: "La Panela", image: "https://www.burlapandbarrel.com/cdn/shop/products/panela_1024x1024@2x.jpg?v=1661194567" },
       { name: "La Pupusa", image: "https://www.acozykitchen.com/wp-content/uploads/2019/01/pupusas-5.jpg" },
-      { name: "El Café Águila", image: "https://www.avid.wiki/images/3/3e/Cafe_Aguila_Roja_1990s.png" },
+      { name: "El Águila", image: "https://www.avid.wiki/images/3/3e/Cafe_Aguila_Roja_1990s.png" },
       { name: "El Plátano", image: "https://www.internationalcuisine.com/wp-content/uploads/2019/04/Honduran-Platanos-Fritos-3.jpg" },
       { name: "El Loroco", image: "https://m.media-amazon.com/images/I/71xyz123abc.jpg" },
       { name: "El Tequeño", image: "https://m.media-amazon.com/images/I/81DEF456GHI.jpg" },
@@ -178,15 +177,15 @@
       { name: "El Chile", image: "https://www.tajin.com/wp-content/uploads/2020/08/tajin-clasico.png" },
       { name: "Las Sabritas", image: "https://world.openfoodfacts.org/images/products/750/101/111/5606/1.jpg" },
       { name: "El Tamal", image: "https://m.media-amazon.com/images/I/81ABC789DEF.jpg" },
-      { name: "La Guadalupe", image: "https://tortilleriadelconsuelo.com/wp-content/uploads/2023/08/tortillas-guadalupe.jpg" },
-      { name: "Los Chicharrones", image: "https://www.centralmarketoceano.com/cdn/shop/products/chicharron-botanero.jpg?v=1661194567" },
+      { name: "La Lupita", image: "https://tortilleriadelconsuelo.com/wp-content/uploads/2023/08/tortillas-guadalupe.jpg" },
+      { name: "El Chicharron", image: "https://www.centralmarketoceano.com/cdn/shop/products/chicharron-botanero.jpg?v=1661194567" },
       { name: "El Gallo", image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Cerveza_Gallo.png/800px-Cerveza_Gallo.png" },
       { name: "La Baleada", image: "https://www.walmart.com.hn/ip/4000/Harina-Gold-Star-Baleada-Facil.jpg" },
       { name: "La Corona", image: "https://www.cervezacorona.es/wp-content/uploads/2020/05/corona-botella.png" },
-      { name: "La Tostada", image: "https://www.farmaciasguadalajara.com/dw/image/v2/BBSZ_PRD/on/demandware.static/-/Sites-master-catalog/default/dw123456789/tostadas-sanissimo.jpg" },
+      { name: "Las Charras", image: "https://www.farmaciasguadalajara.com/dw/image/v2/BBSZ_PRD/on/demandware.static/-/Sites-master-catalog/default/dw123456789/tostadas-sanissimo.jpg" },
       { name: "El Arequipe", image: "https://westheimer.phoeniciafoods.com/cdn/shop/products/alpina-arequipe.jpg?v=1661194567" },
       { name: "Los Quipitos", image: "https://m.media-amazon.com/images/I/71GHI234JKL.jpg" },
-      { name: "Los Platanitos", image: "https://m.media-amazon.com/images/I/61MNO567PQR.jpg" },
+      { name: "Los Maduros", image: "https://m.media-amazon.com/images/I/61MNO567PQR.jpg" },
       { name: "La Guascas", image: "https://www.hola-colombia.eu/web/image/product.template/360/image_1920?unique=99f9c61" },
       { name: "El Mole", image: "https://www.salsas.com/wp-content/uploads/2019/02/mole-dona-maria.jpg" },
       { name: "La Malta", image: "https://m.media-amazon.com/images/I/81STU789VWX.jpg" },
@@ -194,19 +193,15 @@
       { name: "El Curtido", image: "https://www.myplate.gov/sites/default/files/2023-08/curtido-salvadoreno-cabbage-salad_Medium.jpg" },
       { name: "La Yuca", image: "https://goya.es/wp-content/uploads/2020/02/sancocho-colombiano-yuca.jpg" },
       { name: "El Nopal", image: "https://www.lacostena.com.mx/wp-content/uploads/2020/05/nopalitos-la-costena.jpg" },
-      { name: "La Mayonessa", image: "https://www.mccormick.com/~/media/Images/McCormick/Product%20Images/Mayonesa/Mayonesa_Classic_16oz.png" },
-      { name: "La Cerveza Águila", image: "https://www.hola-colombia.eu/web/image/product.template/344/image_1920?unique=d0362ff" },
+      { name: "La Mayo", image: "https://www.mccormick.com/~/media/Images/McCormick/Product%20Images/Mayonesa/Mayonesa_Classic_16oz.png" },
       { name: "Los Totopos", image: "https://www.missionfoods.com.mx/wp-content/uploads/2020/05/totopos-mission.jpg" },
-      { name: "El Refresco Pilsener", image: "https://circusliquorsc.com/cdn/shop/products/pilsener-el-salvador.jpg?v=1661194567" },
       { name: "El Milagro", image: "https://www.upcitemdb.com/images/preview/038622621174/El_Milagro_Tortillas.jpg" },
       { name: "Los Takis", image: "https://takis.us/wp-content/uploads/2020/08/takis-fuego.jpg" },
       { name: "La Manteca", image: "https://acosa.com.hn/wp-content/uploads/2020/05/manteca-clover-brand.jpg" },
       { name: "La Juanita", image: "https://m.media-amazon.com/images/I/81XYZ123ABC.jpg" },
       { name: "La Arepa", image: "https://m.media-amazon.com/images/I/71DEF456GHI.jpg" },
-      { name: "El Queso de Mano", image: "https://paisausa.com/cdn/shop/products/queso-de-mano-paisa.jpg?v=1661194567" },
+      { name: "El Queso", image: "https://paisausa.com/cdn/shop/products/queso-de-mano-paisa.jpg?v=1661194567" },
       { name: "La Finca", image: "https://www.kaffeelafinca.de/wp-content/uploads/2020/05/cafe-la-finca.jpg" },
-      { name: "El Chipotle", image: "https://m.media-amazon.com/images/I/81JKL789MNO.jpg" },
-      { name: "La Oblea", image: "https://es.pinterest.com/pin/935963001463/ -- replace with actual if available" },
       { name: "La Sopa", image: "https://m.media-amazon.com/images/I/81PQR123STU.jpg" },
       { name: "El Klass", image: "https://www.walmart.com/ip/Klass-Aguas-Frescas-Horchata-with-Vitamin-C-Multiserve-Powdered-Drink-Mix-14-1oz/10317697_1.jpg" },
       { name: "La Victoria", image: "https://www.salsas.com/wp-content/uploads/2019/02/salsa-la-victoria.jpg" },
