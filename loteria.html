@@ -4,158 +4,521 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lotería El Mexiquense Market</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #0f8f61;
+      --primary-dark: #0b6244;
+      --accent: #e0474c;
+      --surface: rgba(255, 255, 255, 0.85);
+      --text: #1d1d1d;
+      --muted: #5a5a5a;
+      --border-radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-image: url('https://www.transparenttextures.com/patterns/papel-picado.png');
-      background-size: cover;
-      background-attachment: fixed;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
       margin: 0;
-      flex-direction: column;
-      text-align: center;
-      color: #333;
-    }
-    .container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
-      width: 90%;
-    }
-    h1 {
-      color: #198452;
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-    #card-image {
-      width: 200px;
-      height: 300px;
-      margin: 20px auto;
-      border: 4px solid #198452;
-      border-radius: 15px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-      background: linear-gradient(45deg, #D03937, #198452);
-      padding: 5px;
+      font-family: 'Poppins', Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, rgba(14, 107, 74, 0.9), rgba(10, 55, 39, 0.95)),
+        url('https://www.transparenttextures.com/patterns/papel-picado.png');
+      background-size: cover;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 32px 16px;
     }
+
+    .page {
+      width: min(1080px, 100%);
+      background: var(--surface);
+      border-radius: var(--border-radius);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    header.hero {
+      background: linear-gradient(135deg, rgba(240, 71, 76, 0.9), rgba(15, 143, 97, 0.9));
+      color: #fff;
+      padding: 36px clamp(24px, 5vw, 48px);
+      display: grid;
+      grid-template-columns: auto 120px;
+      gap: 24px;
+      align-items: center;
+    }
+
+    header.hero h1 {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+
+    header.hero p {
+      margin: 0;
+      font-size: clamp(1rem, 2.4vw, 1.15rem);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .hero em {
+      font-style: normal;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .hero .badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 16px 12px;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      line-height: 1.3;
+    }
+
+    .hero .badge span:first-child {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    main.layout {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(24px, 5vw, 48px);
+      padding: 0 clamp(24px, 5vw, 48px) 36px;
+    }
+
+    .card-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-display {
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #card-name {
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      min-height: 2.2em;
+      text-align: center;
+    }
+
+    #card-image {
+      width: clamp(220px, 28vw, 260px);
+      aspect-ratio: 2 / 3;
+      border-radius: 20px;
+      border: 4px solid rgba(15, 143, 97, 0.2);
+      background: linear-gradient(160deg, rgba(240, 71, 76, 0.18), rgba(15, 143, 97, 0.2));
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #card-image.loading::after {
+      content: "Cargando carta...";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.75);
+      font-weight: 600;
+      color: var(--primary-dark);
+      letter-spacing: 0.08em;
+    }
+
     #card-image img {
       width: 100%;
       height: 100%;
-      border-radius: 10px;
       object-fit: cover;
+      border-radius: 14px;
     }
-    #card-image.loading::before {
-      content: "Cargando...";
-      color: #333;
-      font-size: 1.2em;
+
+    #card-image .placeholder {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
-    #card-name {
-      font-size: 1.8em;
-      color: #D03937;
-      margin: 10px 0;
-    }
-    #tablero {
-      display: grid;
-      grid-template-columns: repeat(4, 50px);
-      gap: 5px;
-      margin: 20px auto;
-      max-width: 220px;
-    }
-    #controls {
+
+    .controls-panel {
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin: 20px 0;
+      gap: 18px;
     }
-    #controls button {
-      background-color: #D03937;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1.2em;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    #controls button:hover {
-      background-color: #198452;
-    }
-    select {
-      padding: 8px;
-      font-size: 1em;
-      border-radius: 5px;
-      border: 1px solid #198452;
-    }
-    .share-buttons {
-      margin-top: 20px;
+
+    #controls {
       display: flex;
-      gap: 10px;
+      flex-wrap: wrap;
+      gap: 12px;
       justify-content: center;
     }
-    .share-buttons a {
-      color: #D03937;
-      font-size: 1.2em;
+
+    #controls button {
+      flex: 1 1 150px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+      box-shadow: 0 12px 18px rgba(15, 143, 97, 0.2);
+    }
+
+    #controls button.secondary {
+      background: var(--accent);
+      box-shadow: 0 12px 18px rgba(224, 71, 76, 0.2);
+    }
+
+    #controls button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 24px rgba(15, 143, 97, 0.24);
+    }
+
+    #controls button.secondary:hover {
+      box-shadow: 0 18px 24px rgba(224, 71, 76, 0.24);
+    }
+
+    #controls button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .speed-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    select {
+      border: 1px solid rgba(15, 143, 97, 0.25);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      font-weight: 600;
+      color: var(--primary-dark);
+      background: rgba(255, 255, 255, 0.9);
+      min-width: 150px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(15, 143, 97, 0.15);
+    }
+
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: rgba(15, 143, 97, 0.1);
+      color: var(--primary-dark);
+      font-weight: 600;
       text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+      align-self: center;
     }
+
+    .download-link i {
+      font-size: 1.1rem;
+    }
+
+    .download-link:hover {
+      background: rgba(224, 71, 76, 0.15);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    aside.sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .board-card,
+    .info-card {
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      color: var(--primary-dark);
+    }
+
+    .card-title i {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+
+    #tablero {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+      gap: 10px;
+      justify-items: center;
+    }
+
+    #tablero img {
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .info-card ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .info-card li strong {
+      color: var(--primary-dark);
+    }
+
+    .share-panel {
+      padding: 0 clamp(24px, 5vw, 48px) 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .share-panel h2 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+    }
+
+    .share-buttons a {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(15, 143, 97, 0.1);
+      color: var(--primary-dark);
+      font-size: 1.2rem;
+      text-decoration: none;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
     .share-buttons a:hover {
-      color: #198452;
+      transform: translateY(-3px);
+      background: rgba(224, 71, 76, 0.15);
+      color: var(--accent);
     }
+
+    footer {
+      text-align: center;
+      padding: 24px clamp(24px, 5vw, 48px) 36px;
+      font-size: 0.85rem;
+      color: rgba(29, 29, 29, 0.65);
+      border-top: 1px solid rgba(15, 143, 97, 0.12);
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    footer strong {
+      color: var(--primary-dark);
+    }
+
+    @media (max-width: 900px) {
+      header.hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero .badge {
+        justify-self: center;
+      }
+
+      main.layout {
+        grid-template-columns: 1fr;
+      }
+
+      #controls {
+        justify-content: stretch;
+      }
+
+      #controls button {
+        flex-basis: calc(50% - 12px);
+      }
+    }
+
     @media (max-width: 600px) {
-      h1 {
-        font-size: 2em;
+      body {
+        padding: 16px 10px;
       }
-      #card-image {
-        width: 150px;
-        height: 225px;
+
+      .page {
+        gap: 24px;
       }
-      #card-name {
-        font-size: 1.5em;
+
+      .controls-panel {
+        padding: 20px;
       }
-      #controls button, select {
-        font-size: 1em;
-        padding: 8px 16px;
+
+      #controls button {
+        flex-basis: 100%;
       }
-      #tablero {
-        grid-template-columns: repeat(4, 40px);
-        max-width: 176px;
+
+      .share-buttons {
+        flex-wrap: wrap;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="imagenes/logo.png" alt="El Mexiquense Market" style="width: 120px; margin-bottom: 20px;">
-    <h1> Mexiquense Market</h1>
-    <div id="card-image">Selecciona una carta</div>
-    <div id="card-name"></div>
-    <div id="tablero"></div>
-    <div id="controls">
-      <select id="speed-select" onchange="updateSpeed()">
-        <option value="3000">Rápido (3s)</option>
-        <option value="5000" selected>Normal (5s)</option>
-        <option value="7000">Lento (7s)</option>
-      </select>
-      <button id="play-button" onclick="togglePlay()" aria-label="Iniciar la lotería"><i class="fas fa-play"></i> Jugar</button>
-      <button id="pause-button" onclick="pauseGame()" style="display: none;" aria-label="Pausar la lotería"><i class="fas fa-pause"></i> Pausar</button>
-      <button id="resume-button" onclick="resumeGame()" style="display: none;" aria-label="Seguir jugando la lotería"><i class="fas fa-play"></i> Seguir Jugando</button>
-      <button id="reset-button" onclick="resetGame()" aria-label="Reiniciar el juego"><i class="fas fa-redo"></i> Reiniciar Juego</button>
-      <a href="tableros.pdf" download><button>Descargar Tableros</button></a>
-    </div>
-    <div class="share-buttons">
-      <a href="https://www.instagram.com/share?url=https://oscararmando2.github.io/Loteria/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
-      <a href="https://api.whatsapp.com/send?text=¡Juega la Lotería El Mexiquense Market! https://oscararmando2.github.io/Loteria/" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-    </div>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <h1>Lotería <em>El Mexiquense Market</em></h1>
+        <p>Una experiencia digital vibrante para acompañar tus reuniones, celebraciones y momentos familiares.</p>
+      </div>
+      <div class="badge">
+        <span>48</span>
+        <span>Cartas<br>personalizadas</span>
+      </div>
+    </header>
+    <main class="layout">
+      <section class="card-panel" aria-labelledby="card-section-title">
+        <div class="card-display">
+          <h2 id="card-section-title" class="card-title"><i class="fa-solid fa-star"></i> Carta actual</h2>
+          <div id="card-image">
+            <span class="placeholder">Selecciona una carta</span>
+          </div>
+          <div id="card-name"></div>
+        </div>
+        <div class="controls-panel" aria-label="Controles del juego">
+          <div id="controls">
+            <button id="play-button"><i class="fa-solid fa-play"></i> Iniciar juego</button>
+            <button id="pause-button" class="secondary" style="display: none;"><i class="fa-solid fa-pause"></i> Pausar</button>
+            <button id="resume-button" style="display: none;"><i class="fa-solid fa-play"></i> Reanudar</button>
+            <button id="draw-button" class="secondary"><i class="fa-solid fa-shuffle"></i> Siguiente carta</button>
+            <button id="reset-button"><i class="fa-solid fa-rotate"></i> Reiniciar baraja</button>
+          </div>
+          <div class="speed-control">
+            <span><i class="fa-solid fa-gauge-high"></i> Velocidad automática:</span>
+            <select id="speed-select">
+              <option value="3000">Cada 3 segundos</option>
+              <option value="5000">Cada 5 segundos</option>
+              <option value="7000" selected>Cada 7 segundos</option>
+              <option value="10000">Cada 10 segundos</option>
+            </select>
+          </div>
+          <a class="download-link" href="tableros.pdf" download>
+            <i class="fa-solid fa-file-arrow-down"></i>
+            Descargar tableros imprimibles
+          </a>
+        </div>
+      </section>
+      <aside class="sidebar">
+        <div class="board-card">
+          <h2 class="card-title"><i class="fa-solid fa-table-cells-large"></i> Tablero sorpresa</h2>
+          <div id="tablero" aria-live="polite"></div>
+        </div>
+        <div class="info-card">
+          <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> Consejos rápidos</h2>
+          <ul>
+            <li><strong>Prepara tus cartones:</strong> Imprime o comparte las cartas digitales para cada jugador.</li>
+            <li><strong>Personaliza el ritmo:</strong> Ajusta la velocidad automática o utiliza "Siguiente carta" para avanzar manualmente.</li>
+            <li><strong>Activa el sonido:</strong> Escucha el nombre de cada carta y usa la narración para animar tu juego.</li>
+            <li><strong>Reinicia fácilmente:</strong> Vuelve a barajar cuando se hayan mostrado todas las cartas.</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+    <section class="share-panel">
+      <h2>Comparte la lotería con tu comunidad</h2>
+      <div class="share-buttons">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://elmexiquensemarket.com" target="_blank" rel="noopener" aria-label="Compartir en Facebook">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+        <a href="https://api.whatsapp.com/send?text=Juega%20la%20Loter%C3%ADa%20del%20Mexiquense%20Market%20en%20https://elmexiquensemarket.com" target="_blank" rel="noopener" aria-label="Compartir por WhatsApp">
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <a href="https://twitter.com/intent/tweet?text=Juega%20la%20Loter%C3%ADa%20del%20Mexiquense%20Market%20en%20https://elmexiquensemarket.com" target="_blank" rel="noopener" aria-label="Compartir en X">
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+        <a href="mailto:?subject=Loter%C3%ADa%20El%20Mexiquense%20Market&body=Descubre%20la%20versi%C3%B3n%20digital%20de%20la%20loter%C3%ADa%20en%20https://elmexiquensemarket.com" aria-label="Compartir por correo">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </div>
+    </section>
+    <footer>
+      <strong>El Mexiquense Market</strong> · Tradición latina reinventada para tus celebraciones modernas.
+    </footer>
   </div>
-  <audio id="sound-effect" src="https://freesound.org/data/previews/123/456_789.mp3"></audio>
 
+  <audio id="sound-effect" src="https://www.myinstants.com/media/sounds/correct-answer.mp3"></audio>
   <script>
     const cards = [
       { name: "EL ACHIOTE", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
@@ -208,6 +571,45 @@
       { name: "LOS ZAMBOS", image: "imagenes/LOS ZAMBOS.png" }
     ];
 
+    const tableros = [
+      [
+        "EL ACHIOTE", "EL AGUACATE", "EL AGUILA", "EL AREQUIPE",
+        "EL ATOL", "EL CHICHARRON", "EL CHILE", "EL CURTIDO",
+        "EL GALLO", "EL KLASS", "EL LOROCO", "EL MILAGRO",
+        "EL MOLE", "EL NOPAL", "EL PLATANO", "EL QUESO"
+      ],
+      [
+        "EL SELLO ROJO", "EL TAMAL", "EL TEQUENO", "LA AREPA",
+        "LA BALEADA", "LA CACHAPA", "LA CHICHA", "LA COLOMBIANA",
+        "LA CORONA", "LA COSTEÑA", "LA CREMA", "LA JUANITA",
+        "LA LUPITA", "LA MALTA", "LA MANTECA", "LA MARUCHAN"
+      ],
+      [
+        "LA MASECA", "LA MAYO", "LA PANELA", "LA VICTORIA",
+        "LA YUCA", "LAS CHARRAS", "LAS GUASCAS", "LAS PUPUSAS",
+        "LAS SABRITAS", "LOS FRIJOLES", "LOS JARRITOS", "LOS MADUROS",
+        "LOS QUIPITOS", "LOS TAKIS", "LOS TOTOPOS", "LOS ZAMBOS"
+      ],
+      [
+        "EL ACHIOTE", "EL AREQUIPE", "EL CURTIDO", "EL GALLO",
+        "EL LOROCO", "EL MILAGRO", "EL NOPAL", "EL SELLO ROJO",
+        "LA CACHAPA", "LA COLOMBIANA", "LA COSTEÑA", "LA JUANITA",
+        "LA MASECA", "LAS CHARRAS", "LOS FRIJOLES", "LOS TAKIS"
+      ],
+      [
+        "EL AGUACATE", "EL CHILE", "EL PLATANO", "EL QUESO",
+        "EL TAMAL", "EL TEQUENO", "LA AREPA", "LA CHICHA",
+        "LA CORONA", "LA CREMA", "LA LUPITA", "LA MALTA",
+        "LAS SABRITAS", "LOS JARRITOS", "LOS MADUROS", "LOS ZAMBOS"
+      ],
+      [
+        "EL AREQUIPE", "EL ATOL", "EL CHICHARRON", "EL MOLE",
+        "EL NOPAL", "EL SELLO ROJO", "LA AREPA", "LA COSTEÑA",
+        "LA MANTECA", "LA MARUCHAN", "LA MAYO", "LA PANELA",
+        "LAS PUPUSAS", "LOS FRIJOLES", "LOS QUIPITOS", "LOS TOTOPOS"
+      ]
+    ];
+
     let deck = [...cards];
     let currentIndex = deck.length;
     let isPlaying = false;
@@ -232,7 +634,7 @@
       document.getElementById("card-name").textContent = card.name;
       const imageDiv = document.getElementById("card-image");
       imageDiv.classList.add("loading");
-      imageDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onload="this.parentElement.classList.remove('loading')" onerror="this.src='https://via.placeholder.com/200x300?text=${encodeURIComponent(card.name)}'">`;
+      imageDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onload="this.parentElement.classList.remove('loading')" onerror="this.src='https://via.placeholder.com/240x360?text=${encodeURIComponent(card.name)}'">`;
       document.getElementById("sound-effect").play();
       speakCard(card);
     }
@@ -285,7 +687,8 @@
       currentIndex = deck.length;
       shuffleDeck();
       document.getElementById("card-name").textContent = "";
-      document.getElementById("card-image").innerHTML = "Selecciona una carta";
+      document.getElementById("card-image").innerHTML = "<span class='placeholder'>Selecciona una carta</span>";
+      document.getElementById("card-image").classList.remove("loading");
       document.getElementById("play-button").style.display = "inline-block";
       document.getElementById("pause-button").style.display = "none";
       document.getElementById("resume-button").style.display = "none";
@@ -305,13 +708,26 @@
       const tableroDiv = document.getElementById("tablero");
       tableroDiv.innerHTML = tablero.map(name => {
         const card = cards.find(c => c.name === name);
-        return `<img src="${card.image}" alt="${name}" style="width: 50px; height: 75px; border-radius: 5px;">`;
+        return `<img src="${card.image}" alt="${name}">`;
       }).join('');
     }
 
+    document.getElementById("play-button").addEventListener("click", togglePlay);
+    document.getElementById("pause-button").addEventListener("click", pauseGame);
+    document.getElementById("resume-button").addEventListener("click", resumeGame);
+    document.getElementById("reset-button").addEventListener("click", resetGame);
+    document.getElementById("draw-button").addEventListener("click", () => {
+      pauseGame();
+      drawCard();
+    });
+    document.getElementById("speed-select").addEventListener("change", updateSpeed);
+
     // Initialize
     shuffleDeck();
-    window.onload = loadTablero;
+    window.onload = () => {
+      loadTablero();
+      document.getElementById("card-image").classList.remove("loading");
+    };
   </script>
 </body>
 </html>
