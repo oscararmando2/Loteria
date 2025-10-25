@@ -396,6 +396,22 @@
       display: flex;
       gap: 18px;
       justify-content: center;
+      background: rgba(29, 29, 29, 0.05);
+      color: var(--muted);
+      font-weight: 500;
+      box-shadow: none;
+    }
+
+    .info-card ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .info-card li strong {
+      color: var(--primary-dark);
     }
 
     .share-buttons a {
@@ -428,6 +444,31 @@
 
     footer strong {
       color: var(--primary-dark);
+    }
+
+    @media (max-width: 900px) {
+      header.hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero .badge {
+        justify-self: center;
+      }
+
+      main.layout {
+        grid-template-columns: 1fr;
+      }
+
+      #controls {
+        justify-content: stretch;
+      }
+
+      #controls button {
+        flex-basis: calc(50% - 12px);
+      }
+    }
+
     }
 
     @media (max-width: 900px) {
@@ -706,6 +747,10 @@
 
       if (typeof trimmedBase.normalize === "function") {
         const withoutDiacritics = trimmedBase
+      addNameVariant(rawBaseName);
+
+      if (typeof rawBaseName.normalize === "function") {
+        const withoutDiacritics = rawBaseName
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
           .replace(/ñ/g, "n")
@@ -734,6 +779,12 @@
       });
 
       const extensions = expandExtensionVariants(card.extensions);
+      addNameVariant(rawBaseName.toLowerCase());
+      addNameVariant(rawBaseName.toUpperCase());
+      addNameVariant(rawBaseName.replace(/\s+/g, "_"));
+      addNameVariant(rawBaseName.replace(/\s+/g, "-"));
+
+      const extensions = card.extensions || DEFAULT_IMAGE_EXTENSIONS;
 
       candidateNames.forEach((nameVariant) => {
         const encodedName = encodeURIComponent(nameVariant);
