@@ -310,17 +310,53 @@
       font-size: 1.2rem;
     }
 
-    #tablero {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    #drawn-cards {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
       gap: 10px;
-      justify-items: center;
+      max-height: 300px;
+      overflow-y: auto;
     }
 
-    #tablero img {
-      width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    #drawn-cards li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 143, 97, 0.08);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      letter-spacing: 0.03em;
+      box-shadow: 0 6px 12px rgba(15, 143, 97, 0.18);
+    }
+
+    #drawn-cards li .index {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    #drawn-cards li span:last-child {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    #drawn-cards li.empty {
+      justify-content: center;
+      background: rgba(29, 29, 29, 0.05);
+      color: var(--muted);
+      font-weight: 500;
+      box-shadow: none;
     }
 
     .info-card ul {
@@ -482,8 +518,8 @@
       </section>
       <aside class="sidebar">
         <div class="board-card">
-          <h2 class="card-title"><i class="fa-solid fa-table-cells-large"></i> Tablero sorpresa</h2>
-          <div id="tablero" aria-live="polite"></div>
+          <h2 class="card-title"><i class="fa-solid fa-list"></i> Cartas leídas</h2>
+          <ul id="drawn-cards" aria-live="polite"></ul>
         </div>
         <div class="info-card">
           <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> Consejos rápidos</h2>
@@ -614,6 +650,27 @@
     let currentIndex = deck.length;
     let isPlaying = false;
     let intervalId = null;
+    let drawnCards = [];
+
+    function updateDrawnCards() {
+      const list = document.getElementById("drawn-cards");
+      if (!list) return;
+
+      if (drawnCards.length === 0) {
+        list.innerHTML = "<li class=\"empty\">Aún no se han leído cartas.</li>";
+        return;
+      }
+
+      list.innerHTML = drawnCards
+        .map((card, index) => `<li><span class="index">${index + 1}</span><span>${card.name}</span></li>`)
+        .join("");
+      list.scrollTop = list.scrollHeight;
+    }
+
+    function resetDrawnCards() {
+      drawnCards = [];
+      updateDrawnCards();
+    }
 
     function shuffleDeck() {
       for (let i = currentIndex - 1; i > 0; i--) {
@@ -628,6 +685,7 @@
         deck = [...cards];
         currentIndex = deck.length;
         shuffleDeck();
+        resetDrawnCards();
       }
       currentIndex--;
       const card = deck[currentIndex];
@@ -636,6 +694,8 @@
       imageDiv.classList.add("loading");
       imageDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onload="this.parentElement.classList.remove('loading')" onerror="this.src='https://via.placeholder.com/240x360?text=${encodeURIComponent(card.name)}'">`;
       document.getElementById("sound-effect").play();
+      drawnCards.push(card);
+      updateDrawnCards();
       speakCard(card);
     }
 
@@ -692,7 +752,7 @@
       document.getElementById("play-button").style.display = "inline-block";
       document.getElementById("pause-button").style.display = "none";
       document.getElementById("resume-button").style.display = "none";
-      loadTablero();
+      resetDrawnCards();
     }
 
     function updateSpeed() {
@@ -703,14 +763,15 @@
       }
     }
 
-    function loadTablero() {
-      const tablero = tableros[Math.floor(Math.random() * tableros.length)];
-      const tableroDiv = document.getElementById("tablero");
-      tableroDiv.innerHTML = tablero.map(name => {
-        const card = cards.find(c => c.name === name);
-        return `<img src="${card.image}" alt="${name}">`;
-      }).join('');
-    }
+    document.getElementById("play-button").addEventListener("click", togglePlay);
+    document.getElementById("pause-button").addEventListener("click", pauseGame);
+    document.getElementById("resume-button").addEventListener("click", resumeGame);
+    document.getElementById("reset-button").addEventListener("click", resetGame);
+    document.getElementById("draw-button").addEventListener("click", () => {
+      pauseGame();
+      drawCard();
+    });
+    document.getElementById("speed-select").addEventListener("change", updateSpeed);
 
     document.getElementById("play-button").addEventListener("click", togglePlay);
     document.getElementById("pause-button").addEventListener("click", pauseGame);
@@ -725,7 +786,7 @@
     // Initialize
     shuffleDeck();
     window.onload = () => {
-      loadTablero();
+      resetDrawnCards();
       document.getElementById("card-image").classList.remove("loading");
     };
   </script>
