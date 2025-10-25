@@ -469,6 +469,31 @@
       }
     }
 
+    }
+
+    @media (max-width: 900px) {
+      header.hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero .badge {
+        justify-self: center;
+      }
+
+      main.layout {
+        grid-template-columns: 1fr;
+      }
+
+      #controls {
+        justify-content: stretch;
+      }
+
+      #controls button {
+        flex-basis: calc(50% - 12px);
+      }
+    }
+
     @media (max-width: 600px) {
       body {
         padding: 16px 10px;
@@ -655,6 +680,27 @@
       cardCountElement.textContent = cards.length.toString();
     }
 
+    function expandExtensionVariants(extensions = DEFAULT_IMAGE_EXTENSIONS) {
+      const variants = [];
+      extensions.forEach((ext) => {
+        if (!ext) return;
+        const normalized = ext.toString().trim();
+        if (!normalized) return;
+        const lower = normalized.toLowerCase();
+        const upper = normalized.toUpperCase();
+        const capitalized = lower.replace(/^[a-z]/, (letter) =>
+          letter.toUpperCase()
+        );
+
+        [lower, upper, capitalized].forEach((value) => {
+          if (!variants.includes(value)) {
+            variants.push(value);
+          }
+        });
+      });
+      return variants;
+    }
+
     function buildImageCandidates(card) {
       const candidates = [];
       const pushCandidate = (url) => {
@@ -695,6 +741,12 @@
         candidateNames.push(value);
       };
 
+      const trimmedBase = rawBaseName.trim();
+      addNameVariant(trimmedBase);
+      addNameVariant(trimmedBase.replace(/\s+/g, " "));
+
+      if (typeof trimmedBase.normalize === "function") {
+        const withoutDiacritics = trimmedBase
       addNameVariant(rawBaseName);
 
       if (typeof rawBaseName.normalize === "function") {
@@ -706,6 +758,27 @@
         addNameVariant(withoutDiacritics);
       }
 
+      const lowerNoDiacritics = trimmedBase
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/ñ/g, "n");
+      if (lowerNoDiacritics) {
+        addNameVariant(lowerNoDiacritics);
+      }
+
+      const simplified = trimmedBase.replace(/[^\p{L}\p{N}]+/gu, " ");
+      const simplifiedLower = simplified.toLowerCase();
+
+      [trimmedBase, simplified, simplifiedLower].forEach((baseVariant) => {
+        if (!baseVariant) return;
+        const compact = baseVariant.replace(/\s+/g, "");
+        const underscored = baseVariant.replace(/\s+/g, "_");
+        const dashed = baseVariant.replace(/\s+/g, "-");
+        [compact, underscored, dashed].forEach(addNameVariant);
+      });
+
+      const extensions = expandExtensionVariants(card.extensions);
       addNameVariant(rawBaseName.toLowerCase());
       addNameVariant(rawBaseName.toUpperCase());
       addNameVariant(rawBaseName.replace(/\s+/g, "_"));
@@ -721,6 +794,10 @@
           const rawPath = `${folder}/${nameVariant}.${extension}`;
           if (rawPath !== encodedPath) {
             pushCandidate(rawPath);
+          }
+          const relativePath = `./${folder}/${nameVariant}.${extension}`;
+          if (relativePath !== rawPath && relativePath !== encodedPath) {
+            pushCandidate(relativePath);
           }
         });
       });
