@@ -681,24 +681,36 @@
     }
 
     function expandExtensionVariants(extensions = DEFAULT_IMAGE_EXTENSIONS) {
+      const base = Array.isArray(extensions) ? extensions : [extensions];
       const variants = [];
-      extensions.forEach((ext) => {
-        if (!ext) return;
+
+      base.forEach((ext) => {
+        if (!ext && ext !== 0) return;
         const normalized = ext.toString().trim();
         if (!normalized) return;
+
         const lower = normalized.toLowerCase();
         const upper = normalized.toUpperCase();
         const capitalized = lower.replace(/^[a-z]/, (letter) =>
           letter.toUpperCase()
         );
 
-        [lower, upper, capitalized].forEach((value) => {
-          if (!variants.includes(value)) {
+        [normalized, lower, upper, capitalized].forEach((value) => {
+          if (value && !variants.includes(value)) {
             variants.push(value);
           }
         });
       });
+
       return variants;
+    }
+
+    const REMOTE_IMAGE_BASE =
+      "https://raw.githubusercontent.com/oscararmando2/Loteria/main";
+    const ABSOLUTE_URL_REGEX = /^[a-z][a-z\d+\-.]*:\/\//i;
+
+    function isAbsoluteUrl(value) {
+      return ABSOLUTE_URL_REGEX.test(value);
     }
 
     function buildImageCandidates(card) {
@@ -710,6 +722,14 @@
 
       if (card.image) {
         pushCandidate(card.image);
+        if (!isAbsoluteUrl(card.image)) {
+          const encodedImage = card.image
+            .split("/")
+            .map((segment) => encodeURIComponent(segment))
+            .join("/");
+          pushCandidate(encodedImage);
+          pushCandidate(`${REMOTE_IMAGE_BASE}/${encodedImage}`);
+        }
       }
 
       if (card.file) {
@@ -717,12 +737,14 @@
           ? card.file
           : `imagenes/${card.file}`;
         pushCandidate(explicitPath);
-        pushCandidate(
-          explicitPath
+        if (!isAbsoluteUrl(explicitPath)) {
+          const encodedFile = explicitPath
             .split("/")
             .map((segment) => encodeURIComponent(segment))
-            .join("/")
-        );
+            .join("/");
+          pushCandidate(encodedFile);
+          pushCandidate(`${REMOTE_IMAGE_BASE}/${encodedFile}`);
+        }
       }
 
       const folder = (card.folder || "imagenes").replace(/\/+$/, "");
@@ -730,46 +752,46 @@
         .split("/")
         .map((segment) => encodeURIComponent(segment))
         .join("/");
+
       const rawBaseName = (card.fileName || card.name || "").toString();
-      if (!rawBaseName) {
+      if (!rawBaseName.trim()) {
         return candidates;
       }
 
       const candidateNames = [];
       const addNameVariant = (value) => {
-        if (!value || candidateNames.includes(value)) return;
-        candidateNames.push(value);
+        if (!value) return;
+        const trimmed = value.toString().trim();
+        if (!trimmed || candidateNames.includes(trimmed)) return;
+        candidateNames.push(trimmed);
       };
 
       const trimmedBase = rawBaseName.trim();
       addNameVariant(trimmedBase);
-      addNameVariant(trimmedBase.replace(/\s+/g, " "));
-
-      if (typeof trimmedBase.normalize === "function") {
-        const withoutDiacritics = trimmedBase
       addNameVariant(rawBaseName);
+      addNameVariant(trimmedBase.replace(/\s+/g, " "));
+      addNameVariant(rawBaseName.replace(/\s+/g, " "));
 
-      if (typeof rawBaseName.normalize === "function") {
-        const withoutDiacritics = rawBaseName
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/ñ/g, "n")
-          .replace(/Ñ/g, "N");
-        addNameVariant(withoutDiacritics);
-      }
+      const normalizeValue = (value) => {
+        if (value === undefined || value === null) return "";
+        const stringValue = value.toString();
+        if (!stringValue) return "";
+        if (typeof stringValue.normalize === "function") {
+          return stringValue
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/ñ/g, "n")
+            .replace(/Ñ/g, "N");
+        }
+        return stringValue;
+      };
 
-      const lowerNoDiacritics = trimmedBase
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/ñ/g, "n");
-      if (lowerNoDiacritics) {
-        addNameVariant(lowerNoDiacritics);
-      }
+      addNameVariant(normalizeValue(trimmedBase));
+      addNameVariant(normalizeValue(trimmedBase.toLowerCase()));
+      addNameVariant(normalizeValue(trimmedBase.toUpperCase()));
 
       const simplified = trimmedBase.replace(/[^\p{L}\p{N}]+/gu, " ");
       const simplifiedLower = simplified.toLowerCase();
-
       [trimmedBase, simplified, simplifiedLower].forEach((baseVariant) => {
         if (!baseVariant) return;
         const compact = baseVariant.replace(/\s+/g, "");
@@ -778,27 +800,27 @@
         [compact, underscored, dashed].forEach(addNameVariant);
       });
 
-      const extensions = expandExtensionVariants(card.extensions);
       addNameVariant(rawBaseName.toLowerCase());
       addNameVariant(rawBaseName.toUpperCase());
       addNameVariant(rawBaseName.replace(/\s+/g, "_"));
       addNameVariant(rawBaseName.replace(/\s+/g, "-"));
 
-      const extensions = card.extensions || DEFAULT_IMAGE_EXTENSIONS;
+      const extensions = expandExtensionVariants(
+        card.extensions || DEFAULT_IMAGE_EXTENSIONS
+      );
 
       candidateNames.forEach((nameVariant) => {
         const encodedName = encodeURIComponent(nameVariant);
         extensions.forEach((extension) => {
           const encodedPath = `${encodedFolder}/${encodedName}.${extension}`;
-          pushCandidate(encodedPath);
           const rawPath = `${folder}/${nameVariant}.${extension}`;
-          if (rawPath !== encodedPath) {
-            pushCandidate(rawPath);
-          }
           const relativePath = `./${folder}/${nameVariant}.${extension}`;
-          if (relativePath !== rawPath && relativePath !== encodedPath) {
-            pushCandidate(relativePath);
-          }
+          const remotePath = `${REMOTE_IMAGE_BASE}/${encodedPath}`;
+
+          pushCandidate(encodedPath);
+          pushCandidate(rawPath);
+          pushCandidate(relativePath);
+          pushCandidate(remotePath);
         });
       });
 
