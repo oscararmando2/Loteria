@@ -4,240 +4,830 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lotería El Mexiquense Market</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      --primary: #0f8f61;
+      --primary-dark: #0b6244;
+      --accent: #e0474c;
+      --surface: rgba(255, 255, 255, 0.85);
+      --text: #1d1d1d;
+      --muted: #5a5a5a;
+      --border-radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      background-image: url('https://www.transparenttextures.com/patterns/papel-picado.png');
-      background-size: cover;
-      background-attachment: fixed;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
       margin: 0;
-      flex-direction: column;
-      text-align: center;
-      color: #333;
-    }
-    .container {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      max-width: 600px;
-      width: 90%;
-    }
-    h1 {
-      color: #198452;
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-    #card-image {
-      width: 200px;
-      height: 300px;
-      margin: 20px auto;
-      border: 4px solid #198452;
-      border-radius: 15px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-      background: linear-gradient(45deg, #D03937, #198452);
-      padding: 5px;
+      font-family: 'Poppins', Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at top, rgba(14, 107, 74, 0.9), rgba(10, 55, 39, 0.95)),
+        url('https://www.transparenttextures.com/patterns/papel-picado.png');
+      background-size: cover;
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 32px 16px;
     }
+
+    .page {
+      width: min(1080px, 100%);
+      background: var(--surface);
+      border-radius: var(--border-radius);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+      backdrop-filter: blur(10px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    header.hero {
+      background: linear-gradient(135deg, rgba(240, 71, 76, 0.9), rgba(15, 143, 97, 0.9));
+      color: #fff;
+      padding: 36px clamp(24px, 5vw, 48px);
+      display: grid;
+      grid-template-columns: auto 120px;
+      gap: 24px;
+      align-items: center;
+    }
+
+    header.hero h1 {
+      font-size: clamp(2.2rem, 4vw, 3rem);
+      font-weight: 700;
+      margin: 0 0 12px;
+    }
+
+    header.hero p {
+      margin: 0;
+      font-size: clamp(1rem, 2.4vw, 1.15rem);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .hero em {
+      font-style: normal;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .hero .badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 16px 12px;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      line-height: 1.3;
+    }
+
+    .hero .badge span:first-child {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    main.layout {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: clamp(24px, 5vw, 48px);
+      padding: 0 clamp(24px, 5vw, 48px) 36px;
+    }
+
+    .card-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card-display {
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #card-name {
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      min-height: 2.2em;
+      text-align: center;
+    }
+
+    #card-image {
+      width: clamp(220px, 28vw, 260px);
+      aspect-ratio: 2 / 3;
+      border-radius: 20px;
+      border: 4px solid rgba(15, 143, 97, 0.2);
+      background: linear-gradient(160deg, rgba(240, 71, 76, 0.18), rgba(15, 143, 97, 0.2));
+      display: grid;
+      place-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #card-image.loading::after {
+      content: "Cargando carta...";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.75);
+      font-weight: 600;
+      color: var(--primary-dark);
+      letter-spacing: 0.08em;
+    }
+
     #card-image img {
       width: 100%;
       height: 100%;
-      border-radius: 10px;
       object-fit: cover;
+      border-radius: 14px;
     }
-    #card-image.loading::before {
-      content: "Cargando...";
-      color: #333;
-      font-size: 1.2em;
+
+    #card-image .placeholder {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
-    #card-name {
-      font-size: 1.8em;
-      color: #D03937;
-      margin: 10px 0;
+
+    #card-image .placeholder.no-image {
+      color: var(--accent);
     }
-    #tablero {
-      display: grid;
-      grid-template-columns: repeat(4, 50px);
-      gap: 5px;
-      margin: 20px auto;
-      max-width: 220px;
+
+    .controls-panel {
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
     }
+
     #controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    #controls button {
+      flex: 1 1 150px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+      box-shadow: 0 12px 18px rgba(15, 143, 97, 0.2);
+    }
+
+    #controls button.secondary {
+      background: var(--accent);
+      box-shadow: 0 12px 18px rgba(224, 71, 76, 0.2);
+    }
+
+    #controls button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 24px rgba(15, 143, 97, 0.24);
+    }
+
+    #controls button.secondary:hover {
+      box-shadow: 0 18px 24px rgba(224, 71, 76, 0.24);
+    }
+
+    #controls button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .speed-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    select {
+      border: 1px solid rgba(15, 143, 97, 0.25);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      font-weight: 600;
+      color: var(--primary-dark);
+      background: rgba(255, 255, 255, 0.9);
+      min-width: 150px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(15, 143, 97, 0.15);
+    }
+
+    .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: rgba(15, 143, 97, 0.1);
+      color: var(--primary-dark);
+      font-weight: 600;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+      align-self: center;
+    }
+
+    .download-link i {
+      font-size: 1.1rem;
+    }
+
+    .download-link:hover {
+      background: rgba(224, 71, 76, 0.15);
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    aside.sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .board-card,
+    .info-card {
+      background: #fff;
+      border-radius: var(--border-radius);
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 16px;
+      color: var(--primary-dark);
+    }
+
+    .card-title i {
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+
+    #drawn-cards {
+      margin: 0;
+      padding: 0;
+      list-style: none;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin: 20px 0;
+      max-height: 300px;
+      overflow-y: auto;
     }
-    #controls button {
-      background-color: #D03937;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      font-size: 1.2em;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    #controls button:hover {
-      background-color: #198452;
-    }
-    select {
-      padding: 8px;
-      font-size: 1em;
-      border-radius: 5px;
-      border: 1px solid #198452;
-    }
-    .share-buttons {
-      margin-top: 20px;
+
+    #drawn-cards li {
       display: flex;
-      gap: 10px;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 143, 97, 0.08);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 600;
+      color: var(--primary-dark);
+      letter-spacing: 0.03em;
+      box-shadow: 0 6px 12px rgba(15, 143, 97, 0.18);
+    }
+
+    #drawn-cards li .index {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    #drawn-cards li span:last-child {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    #drawn-cards li.empty {
+      justify-content: center;
+      background: rgba(29, 29, 29, 0.05);
+      color: var(--muted);
+      font-weight: 500;
+      box-shadow: none;
+    }
+
+    .info-card ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .info-card li strong {
+      color: var(--primary-dark);
+    }
+
+    .share-panel {
+      padding: 0 clamp(24px, 5vw, 48px) 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .share-panel h2 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 18px;
       justify-content: center;
     }
+
     .share-buttons a {
-      color: #D03937;
-      font-size: 1.2em;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(15, 143, 97, 0.1);
+      color: var(--primary-dark);
+      font-size: 1.2rem;
       text-decoration: none;
+      transition: transform 0.2s ease, background 0.2s ease;
     }
+
     .share-buttons a:hover {
-      color: #198452;
+      transform: translateY(-3px);
+      background: rgba(224, 71, 76, 0.15);
+      color: var(--accent);
     }
+
+    footer {
+      text-align: center;
+      padding: 24px clamp(24px, 5vw, 48px) 36px;
+      font-size: 0.85rem;
+      color: rgba(29, 29, 29, 0.65);
+      border-top: 1px solid rgba(15, 143, 97, 0.12);
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    footer strong {
+      color: var(--primary-dark);
+    }
+
+    @media (max-width: 900px) {
+      header.hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .hero .badge {
+        justify-self: center;
+      }
+
+      main.layout {
+        grid-template-columns: 1fr;
+      }
+
+      #controls {
+        justify-content: stretch;
+      }
+
+      #controls button {
+        flex-basis: calc(50% - 12px);
+      }
+    }
+
     @media (max-width: 600px) {
-      h1 {
-        font-size: 2em;
+      body {
+        padding: 16px 10px;
       }
-      #card-image {
-        width: 150px;
-        height: 225px;
+
+      .page {
+        gap: 24px;
       }
-      #card-name {
-        font-size: 1.5em;
+
+      .controls-panel {
+        padding: 20px;
       }
-      #controls button, select {
-        font-size: 1em;
-        padding: 8px 16px;
+
+      #controls button {
+        flex-basis: 100%;
       }
-      #tablero {
-        grid-template-columns: repeat(4, 40px);
-        max-width: 176px;
+
+      .share-buttons {
+        flex-wrap: wrap;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="imagenes/logo.png" alt="El Mexiquense Market" style="width: 120px; margin-bottom: 20px;">
-    <h1> Mexiquense Market</h1>
-    <div id="card-image">Selecciona una carta</div>
-    <div id="card-name"></div>
-    <div id="tablero"></div>
-    <div id="controls">
-      <select id="speed-select" onchange="updateSpeed()">
-        <option value="3000">Rápido (3s)</option>
-        <option value="5000" selected>Normal (5s)</option>
-        <option value="7000">Lento (7s)</option>
-      </select>
-      <button id="play-button" onclick="togglePlay()" aria-label="Iniciar la lotería"><i class="fas fa-play"></i> Jugar</button>
-      <button id="pause-button" onclick="pauseGame()" style="display: none;" aria-label="Pausar la lotería"><i class="fas fa-pause"></i> Pausar</button>
-      <button id="resume-button" onclick="resumeGame()" style="display: none;" aria-label="Seguir jugando la lotería"><i class="fas fa-play"></i> Seguir Jugando</button>
-      <button id="reset-button" onclick="resetGame()" aria-label="Reiniciar el juego"><i class="fas fa-redo"></i> Reiniciar Juego</button>
-      <a href="tableros.pdf" download><button>Descargar Tableros</button></a>
-    </div>
-    <div class="share-buttons">
-      <a href="https://www.instagram.com/share?url=https://oscararmando2.github.io/Loteria/" target="_blank"><i class="fab fa-instagram"></i> Instagram</a>
-      <a href="https://api.whatsapp.com/send?text=¡Juega la Lotería El Mexiquense Market! https://oscararmando2.github.io/Loteria/" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-    </div>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <h1>Lotería <em>El Mexiquense Market</em></h1>
+        <p>Una experiencia digital vibrante para acompañar tus reuniones, celebraciones y momentos familiares.</p>
+      </div>
+      <div class="badge">
+        <span id="card-count">0</span>
+        <span>Cartas<br>personalizadas</span>
+      </div>
+    </header>
+    <main class="layout">
+      <section class="card-panel" aria-labelledby="card-section-title">
+        <div class="card-display">
+          <h2 id="card-section-title" class="card-title"><i class="fa-solid fa-star"></i> Carta actual</h2>
+          <div id="card-image">
+            <span class="placeholder">Selecciona una carta</span>
+          </div>
+          <div id="card-name"></div>
+        </div>
+        <div class="controls-panel" aria-label="Controles del juego">
+          <div id="controls">
+            <button id="play-button"><i class="fa-solid fa-play"></i> Iniciar juego</button>
+            <button id="pause-button" class="secondary" style="display: none;"><i class="fa-solid fa-pause"></i> Pausar</button>
+            <button id="resume-button" style="display: none;"><i class="fa-solid fa-play"></i> Reanudar</button>
+            <button id="draw-button" class="secondary"><i class="fa-solid fa-shuffle"></i> Siguiente carta</button>
+            <button id="reset-button"><i class="fa-solid fa-rotate"></i> Reiniciar baraja</button>
+          </div>
+          <div class="speed-control">
+            <span><i class="fa-solid fa-gauge-high"></i> Velocidad automática:</span>
+            <select id="speed-select">
+              <option value="3000">Cada 3 segundos</option>
+              <option value="5000">Cada 5 segundos</option>
+              <option value="7000" selected>Cada 7 segundos</option>
+              <option value="10000">Cada 10 segundos</option>
+            </select>
+          </div>
+          <a class="download-link" href="tableros.pdf" download>
+            <i class="fa-solid fa-file-arrow-down"></i>
+            Descargar tableros imprimibles
+          </a>
+        </div>
+      </section>
+      <aside class="sidebar">
+        <div class="board-card">
+          <h2 class="card-title"><i class="fa-solid fa-list"></i> Cartas leídas</h2>
+          <ul id="drawn-cards" aria-live="polite"></ul>
+        </div>
+        <div class="info-card">
+          <h2 class="card-title"><i class="fa-solid fa-lightbulb"></i> Consejos rápidos</h2>
+          <ul>
+            <li><strong>Prepara tus cartones:</strong> Imprime o comparte las cartas digitales para cada jugador.</li>
+            <li><strong>Personaliza el ritmo:</strong> Ajusta la velocidad automática o utiliza "Siguiente carta" para avanzar manualmente.</li>
+            <li><strong>Activa el sonido:</strong> Escucha el nombre de cada carta y usa la narración para animar tu juego.</li>
+            <li><strong>Reinicia fácilmente:</strong> Vuelve a barajar cuando se hayan mostrado todas las cartas.</li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+    <section class="share-panel">
+      <h2>Comparte la lotería con tu comunidad</h2>
+      <div class="share-buttons">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://elmexiquensemarket.com" target="_blank" rel="noopener" aria-label="Compartir en Facebook">
+          <i class="fa-brands fa-facebook-f"></i>
+        </a>
+        <a href="https://api.whatsapp.com/send?text=Juega%20la%20Loter%C3%ADa%20del%20Mexiquense%20Market%20en%20https://elmexiquensemarket.com" target="_blank" rel="noopener" aria-label="Compartir por WhatsApp">
+          <i class="fa-brands fa-whatsapp"></i>
+        </a>
+        <a href="https://twitter.com/intent/tweet?text=Juega%20la%20Loter%C3%ADa%20del%20Mexiquense%20Market%20en%20https://elmexiquensemarket.com" target="_blank" rel="noopener" aria-label="Compartir en X">
+          <i class="fa-brands fa-x-twitter"></i>
+        </a>
+        <a href="mailto:?subject=Loter%C3%ADa%20El%20Mexiquense%20Market&body=Descubre%20la%20versi%C3%B3n%20digital%20de%20la%20loter%C3%ADa%20en%20https://elmexiquensemarket.com" aria-label="Compartir por correo">
+          <i class="fa-solid fa-envelope"></i>
+        </a>
+      </div>
+    </section>
+    <footer>
+      <strong>El Mexiquense Market</strong> · Tradición latina reinventada para tus celebraciones modernas.
+    </footer>
   </div>
-  <audio id="sound-effect" src="https://freesound.org/data/previews/123/456_789.mp3"></audio>
 
+  <audio id="sound-effect" src="https://www.myinstants.com/media/sounds/correct-answer.mp3"></audio>
   <script>
-    const cards = [
-      { name: "EL ACHIOTE", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL AGUACATE", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL AGUILA", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL AREQUIPE", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL ATOL", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL CHICHARRON", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL CHILE", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL CURTIDO", image: "imagenes/EL CURTIDO.png" },
-      { name: "EL GALLO", image: "imagenes/EL GALLO.png" },
-      { name: "EL KLASS", image: "imagenes/EL KLASS.png" },
-      { name: "EL LOROCO", image: "imagenes/EL LOROCO.png" },
-      { name: "EL MILAGRO", image: "imagenes/EL MILAGRO.png" },
-      { name: "EL MOLE", image: "imagenes/EL MOLE.png" },
-      { name: "EL NOPAL", image: "imagenes/EL NOPAL.png" },
-      { name: "EL PLATANO", image: "imagenes/EL PLATANO.png" },
-      { name: "EL QUESO", image: "imagenes/EL QUESO.png" },
-      { name: "EL SELLO ROJO", image: "imagenes/EL SELLO ROJO.png" },
-      { name: "EL TAMAL", image: "imagenes/EL TAMAL.png" },
-      { name: "EL TEQUENO", image: "imagenes/EL TEQUENO.png" },
-      { name: "LA AREPA", image: "imagenes/LA AREPA.png" },
-      { name: "LA BALEADA", image: "imagenes/LA BALEADA.png" },
-      { name: "LA CACHAPA", image: "imagenes/LA CACHAPA.png" },
-      { name: "LA CHICHA", image: "imagenes/LA CHICHA.png" },
-      { name: "LA COLOMBIANA", image: "imagenes/LA COLOMBIANA.png" },
-      { name: "LA CORONA", image: "imagenes/LA CORONA.png" },
-      { name: "LA COSTEÑA", image: "imagenes/LA COSTEÑA.png" },
-      { name: "LA CREMA", image: "imagenes/LA CREMA.png" },
-      { name: "LA JUANITA", image: "imagenes/LA JUANITA.png" },
-      { name: "LA LUPITA", image: "imagenes/LA LUPITA.png" },
-      { name: "LA MALTA", image: "imagenes/LA MALTA.png" },
-      { name: "LA MANTECA", image: "imagenes/LA MANTECA.png" },
-      { name: "LA MARUCHAN", image: "imagenes/LA MARUCHAN.png" },
-      { name: "LA MASECA", image: "imagenes/LA MASECA.png" },
-      { name: "LA MAYO", image: "imagenes/LA MAYO.png" },
-      { name: "LA PANELA", image: "imagenes/LA PANELA.png" },
-      { name: "LA VICTORIA", image: "imagenes/LA VICTORIA.png" },
-      { name: "LA YUCA", image: "imagenes/LA YUCA.png" },
-      { name: "LAS CHARRAS", image: "imagenes/LAS CHARRAS.png" },
-      { name: "LAS GUASCAS", image: "imagenes/LAS GUASCAS.png" },
-      { name: "LAS PUPUSAS", image: "imagenes/LAS PUPUSAS.png" },
-      { name: "LAS SABRITAS", image: "imagenes/LAS SABRITAS.png" },
-      { name: "LOS FRIJOLES", image: "imagenes/LOS FRIJOLES.png" },
-      { name: "LOS JARRITOS", image: "imagenes/LOS JARRITOS.png" },
-      { name: "LOS MADUROS", image: "imagenes/LOS MADUROS.png" },
-      { name: "LOS QUIPITOS", image: "imagenes/LOS QUIPITOS.png" },
-      { name: "LOS TAKIS", image: "imagenes/LOS TAKIS.png" },
-      { name: "LOS TOTOPOS", image: "imagenes/LOS TOTOPOS.png" },
-      { name: "LOS ZAMBOS", image: "imagenes/LOS ZAMBOS.png" }
+    const cardEntries = [
+      "EL ACHIOTE",
+      "EL AGUACATE",
+      "EL AGUILA",
+      "EL AREQUIPE",
+      "EL ATOL",
+      "EL CHICHARRON",
+      "EL CHILE",
+      "EL CURTIDO",
+      "EL GALLO",
+      "EL KLASS",
+      "EL LOROCO",
+      "EL MILAGRO",
+      "EL MOLE",
+      "EL NOPAL",
+      "EL PLATANO",
+      "EL QUESO",
+      "EL SELLO ROJO",
+      "EL TAMAL",
+      "EL TEQUENO",
+      "LA AREPA",
+      "LA BALEADA",
+      "LA CACHAPA",
+      "LA CHICHA",
+      "LA COLOMBIANA",
+      "LA CORONA",
+      "LA COSTEÑA",
+      "LA CREMA",
+      "LA JUANITA",
+      "LA LUPITA",
+      "LA MALTA",
+      "LA MANTECA",
+      "LA MARUCHAN",
+      "LA MASECA",
+      "LA MAYO",
+      "LA PANELA",
+      "LA VICTORIA",
+      "LA YUCA",
+      "LAS CHARRAS",
+      "LAS GUASCAS",
+      "LAS PUPUSAS",
+      "LAS SABRITAS",
+      "LOS FRIJOLES",
+      "LOS JARRITOS",
+      "LOS MADUROS",
+      "LOS QUIPITOS",
+      "LOS TAKIS",
+      "LOS TOTOPOS",
+      "LOS ZAMBOS"
     ];
+
+    const cards = cardEntries.map((entry) =>
+      typeof entry === "string" ? { name: entry } : entry
+    );
+
+    const DEFAULT_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif"];
 
     let deck = [...cards];
     let currentIndex = deck.length;
     let isPlaying = false;
     let intervalId = null;
+    let drawnCards = [];
+    let imageRequestId = 0;
+
+    const cardCountElement = document.getElementById("card-count");
+    const playButton = document.getElementById("play-button");
+    const pauseButton = document.getElementById("pause-button");
+    const resumeButton = document.getElementById("resume-button");
+    const drawButton = document.getElementById("draw-button");
+    const resetButton = document.getElementById("reset-button");
+    const speedSelect = document.getElementById("speed-select");
+    const cardImage = document.getElementById("card-image");
+    const cardNameElement = document.getElementById("card-name");
+    const drawnCardsList = document.getElementById("drawn-cards");
+
+    if (cardCountElement) {
+      cardCountElement.textContent = cards.length.toString();
+    }
+
+    function buildImageCandidates(card) {
+      const candidates = [];
+      const pushCandidate = (url) => {
+        if (!url || candidates.includes(url)) return;
+        candidates.push(url);
+      };
+
+      if (card.image) {
+        pushCandidate(card.image);
+      }
+
+      if (card.file) {
+        const explicitPath = card.file.includes("/")
+          ? card.file
+          : `imagenes/${card.file}`;
+        pushCandidate(explicitPath);
+        pushCandidate(
+          explicitPath
+            .split("/")
+            .map((segment) => encodeURIComponent(segment))
+            .join("/")
+        );
+      }
+
+      const folder = (card.folder || "imagenes").replace(/\/+$/, "");
+      const encodedFolder = folder
+        .split("/")
+        .map((segment) => encodeURIComponent(segment))
+        .join("/");
+      const rawBaseName = (card.fileName || card.name || "").toString();
+      if (!rawBaseName) {
+        return candidates;
+      }
+
+      const candidateNames = [];
+      const addNameVariant = (value) => {
+        if (!value || candidateNames.includes(value)) return;
+        candidateNames.push(value);
+      };
+
+      addNameVariant(rawBaseName);
+
+      if (typeof rawBaseName.normalize === "function") {
+        const withoutDiacritics = rawBaseName
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/ñ/g, "n")
+          .replace(/Ñ/g, "N");
+        addNameVariant(withoutDiacritics);
+      }
+
+      addNameVariant(rawBaseName.toLowerCase());
+      addNameVariant(rawBaseName.toUpperCase());
+      addNameVariant(rawBaseName.replace(/\s+/g, "_"));
+      addNameVariant(rawBaseName.replace(/\s+/g, "-"));
+
+      const extensions = card.extensions || DEFAULT_IMAGE_EXTENSIONS;
+
+      candidateNames.forEach((nameVariant) => {
+        const encodedName = encodeURIComponent(nameVariant);
+        extensions.forEach((extension) => {
+          const encodedPath = `${encodedFolder}/${encodedName}.${extension}`;
+          pushCandidate(encodedPath);
+          const rawPath = `${folder}/${nameVariant}.${extension}`;
+          if (rawPath !== encodedPath) {
+            pushCandidate(rawPath);
+          }
+        });
+      });
+
+      return candidates;
+    }
+
+    function displayCardImage(card) {
+      const container = cardImage;
+      if (!container) return;
+
+      const requestId = ++imageRequestId;
+      container.dataset.requestId = requestId.toString();
+      container.classList.add("loading");
+      container.innerHTML = "";
+
+      const showPlaceholder = (message, extraClass = "") => {
+        if (container.dataset.requestId !== requestId.toString()) return;
+        container.innerHTML = "";
+        const placeholder = document.createElement("span");
+        placeholder.className = `placeholder${extraClass ? " " + extraClass : ""}`;
+        placeholder.textContent = message;
+        container.appendChild(placeholder);
+        container.classList.remove("loading");
+        delete container.dataset.requestId;
+      };
+
+      const renderImage = (src) => {
+        if (container.dataset.requestId !== requestId.toString()) return;
+        container.innerHTML = "";
+        const imageElement = document.createElement("img");
+        imageElement.src = src;
+        imageElement.alt = card.name;
+        container.appendChild(imageElement);
+        container.classList.remove("loading");
+        delete container.dataset.requestId;
+      };
+
+      const candidates = buildImageCandidates(card);
+      if (candidates.length === 0) {
+        showPlaceholder("Imagen no disponible", "no-image");
+        return;
+      }
+
+      const tryCandidate = (index) => {
+        if (container.dataset.requestId !== requestId.toString()) return;
+        if (index >= candidates.length) {
+          showPlaceholder("Imagen no disponible", "no-image");
+          return;
+        }
+        const testImage = new Image();
+        testImage.onload = () => renderImage(candidates[index]);
+        testImage.onerror = () => tryCandidate(index + 1);
+        testImage.src = candidates[index];
+      };
+
+      tryCandidate(0);
+    }
+
+    function playSoundEffect() {
+      const audio = document.getElementById("sound-effect");
+      if (!audio) return;
+      audio.currentTime = 0;
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.catch(() => {});
+      }
+    }
+
+    function updateDrawnCards() {
+      if (!drawnCardsList) return;
+
+      if (drawnCards.length === 0) {
+        drawnCardsList.innerHTML = "<li class=\"empty\">Aún no se han leído cartas.</li>";
+        drawnCardsList.scrollTop = 0;
+        return;
+      }
+
+      drawnCardsList.innerHTML = drawnCards
+        .map((card, index) => `<li><span class="index">${index + 1}</span><span>${card.name}</span></li>`)
+        .join("");
+      drawnCardsList.scrollTop = drawnCardsList.scrollHeight;
+    }
+
+    function resetDrawnCards() {
+      drawnCards = [];
+      updateDrawnCards();
+    }
 
     function shuffleDeck() {
-      for (let i = currentIndex - 1; i > 0; i--) {
+      for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [deck[i], deck[j]] = [deck[j], deck[i]];
       }
+      currentIndex = deck.length;
     }
 
     function drawCard() {
       if (currentIndex === 0) {
         alert("¡Se han usado todas las cartas! Barajando de nuevo...");
         deck = [...cards];
-        currentIndex = deck.length;
         shuffleDeck();
+        resetDrawnCards();
       }
+
+      if (deck.length === 0) return;
+
       currentIndex--;
       const card = deck[currentIndex];
-      document.getElementById("card-name").textContent = card.name;
-      const imageDiv = document.getElementById("card-image");
-      imageDiv.classList.add("loading");
-      imageDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onload="this.parentElement.classList.remove('loading')" onerror="this.src='https://via.placeholder.com/200x300?text=${encodeURIComponent(card.name)}'">`;
-      document.getElementById("sound-effect").play();
+      if (cardNameElement) {
+        cardNameElement.textContent = card.name;
+      }
+      displayCardImage(card);
+      playSoundEffect();
+      drawnCards.push(card);
+      updateDrawnCards();
       speakCard(card);
     }
 
     function speakCard(card) {
+      if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+        return;
+      }
       const utterance1 = new SpeechSynthesisUtterance(card.name);
       utterance1.lang = "es-MX";
       utterance1.rate = 0.9;
@@ -253,65 +843,96 @@
     function togglePlay() {
       if (isPlaying) return;
       isPlaying = true;
-      document.getElementById("play-button").style.display = "none";
-      document.getElementById("pause-button").style.display = "inline-block";
-      document.getElementById("resume-button").style.display = "none";
+      if (playButton) playButton.style.display = "none";
+      if (pauseButton) pauseButton.style.display = "inline-block";
+      if (resumeButton) resumeButton.style.display = "none";
       drawCard();
-      const speed = parseInt(document.getElementById("speed-select").value);
+      const speed = speedSelect ? parseInt(speedSelect.value, 10) : 5000;
       intervalId = setInterval(drawCard, speed);
     }
 
     function pauseGame() {
       if (!isPlaying) return;
       clearInterval(intervalId);
+      intervalId = null;
       isPlaying = false;
-      document.getElementById("pause-button").style.display = "none";
-      document.getElementById("resume-button").style.display = "inline-block";
+      if (pauseButton) pauseButton.style.display = "none";
+      if (resumeButton) resumeButton.style.display = "inline-block";
     }
 
     function resumeGame() {
       if (isPlaying) return;
       isPlaying = true;
-      document.getElementById("pause-button").style.display = "inline-block";
-      document.getElementById("resume-button").style.display = "none";
-      const speed = parseInt(document.getElementById("speed-select").value);
+      if (pauseButton) pauseButton.style.display = "inline-block";
+      if (resumeButton) resumeButton.style.display = "none";
+      const speed = speedSelect ? parseInt(speedSelect.value, 10) : 5000;
       intervalId = setInterval(drawCard, speed);
     }
 
     function resetGame() {
       clearInterval(intervalId);
+      intervalId = null;
       isPlaying = false;
       deck = [...cards];
-      currentIndex = deck.length;
       shuffleDeck();
-      document.getElementById("card-name").textContent = "";
-      document.getElementById("card-image").innerHTML = "Selecciona una carta";
-      document.getElementById("play-button").style.display = "inline-block";
-      document.getElementById("pause-button").style.display = "none";
-      document.getElementById("resume-button").style.display = "none";
-      loadTablero();
+      if (cardNameElement) {
+        cardNameElement.textContent = "";
+      }
+      if (cardImage) {
+        imageRequestId += 1;
+        cardImage.dataset.requestId = "";
+        cardImage.classList.remove("loading");
+        cardImage.innerHTML = "";
+        const placeholder = document.createElement("span");
+        placeholder.className = "placeholder";
+        placeholder.textContent = "Selecciona una carta";
+        cardImage.appendChild(placeholder);
+      }
+      if (playButton) playButton.style.display = "inline-block";
+      if (pauseButton) pauseButton.style.display = "none";
+      if (resumeButton) resumeButton.style.display = "none";
+      if ("speechSynthesis" in window && typeof window.speechSynthesis.cancel === "function") {
+        window.speechSynthesis.cancel();
+      }
+      resetDrawnCards();
     }
 
     function updateSpeed() {
       if (isPlaying) {
         clearInterval(intervalId);
-        const speed = parseInt(document.getElementById("speed-select").value);
+        const speed = speedSelect ? parseInt(speedSelect.value, 10) : 5000;
         intervalId = setInterval(drawCard, speed);
       }
     }
 
-    function loadTablero() {
-      const tablero = tableros[Math.floor(Math.random() * tableros.length)];
-      const tableroDiv = document.getElementById("tablero");
-      tableroDiv.innerHTML = tablero.map(name => {
-        const card = cards.find(c => c.name === name);
-        return `<img src="${card.image}" alt="${name}" style="width: 50px; height: 75px; border-radius: 5px;">`;
-      }).join('');
+    if (playButton) {
+      playButton.addEventListener("click", togglePlay);
+    }
+    if (pauseButton) {
+      pauseButton.addEventListener("click", pauseGame);
+    }
+    if (resumeButton) {
+      resumeButton.addEventListener("click", resumeGame);
+    }
+    if (resetButton) {
+      resetButton.addEventListener("click", resetGame);
+    }
+    if (drawButton) {
+      drawButton.addEventListener("click", () => {
+        pauseGame();
+        drawCard();
+      });
+    }
+    if (speedSelect) {
+      speedSelect.addEventListener("change", updateSpeed);
     }
 
     // Initialize
     shuffleDeck();
-    window.onload = loadTablero;
+    resetDrawnCards();
+    if (cardImage) {
+      cardImage.classList.remove("loading");
+    }
   </script>
 </body>
 </html>
