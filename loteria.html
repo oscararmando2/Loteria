@@ -607,6 +607,45 @@
       { name: "LOS ZAMBOS", image: "imagenes/LOS ZAMBOS.png" }
     ];
 
+    const tableros = [
+      [
+        "EL ACHIOTE", "EL AGUACATE", "EL AGUILA", "EL AREQUIPE",
+        "EL ATOL", "EL CHICHARRON", "EL CHILE", "EL CURTIDO",
+        "EL GALLO", "EL KLASS", "EL LOROCO", "EL MILAGRO",
+        "EL MOLE", "EL NOPAL", "EL PLATANO", "EL QUESO"
+      ],
+      [
+        "EL SELLO ROJO", "EL TAMAL", "EL TEQUENO", "LA AREPA",
+        "LA BALEADA", "LA CACHAPA", "LA CHICHA", "LA COLOMBIANA",
+        "LA CORONA", "LA COSTEÑA", "LA CREMA", "LA JUANITA",
+        "LA LUPITA", "LA MALTA", "LA MANTECA", "LA MARUCHAN"
+      ],
+      [
+        "LA MASECA", "LA MAYO", "LA PANELA", "LA VICTORIA",
+        "LA YUCA", "LAS CHARRAS", "LAS GUASCAS", "LAS PUPUSAS",
+        "LAS SABRITAS", "LOS FRIJOLES", "LOS JARRITOS", "LOS MADUROS",
+        "LOS QUIPITOS", "LOS TAKIS", "LOS TOTOPOS", "LOS ZAMBOS"
+      ],
+      [
+        "EL ACHIOTE", "EL AREQUIPE", "EL CURTIDO", "EL GALLO",
+        "EL LOROCO", "EL MILAGRO", "EL NOPAL", "EL SELLO ROJO",
+        "LA CACHAPA", "LA COLOMBIANA", "LA COSTEÑA", "LA JUANITA",
+        "LA MASECA", "LAS CHARRAS", "LOS FRIJOLES", "LOS TAKIS"
+      ],
+      [
+        "EL AGUACATE", "EL CHILE", "EL PLATANO", "EL QUESO",
+        "EL TAMAL", "EL TEQUENO", "LA AREPA", "LA CHICHA",
+        "LA CORONA", "LA CREMA", "LA LUPITA", "LA MALTA",
+        "LAS SABRITAS", "LOS JARRITOS", "LOS MADUROS", "LOS ZAMBOS"
+      ],
+      [
+        "EL AREQUIPE", "EL ATOL", "EL CHICHARRON", "EL MOLE",
+        "EL NOPAL", "EL SELLO ROJO", "LA AREPA", "LA COSTEÑA",
+        "LA MANTECA", "LA MARUCHAN", "LA MAYO", "LA PANELA",
+        "LAS PUPUSAS", "LOS FRIJOLES", "LOS QUIPITOS", "LOS TOTOPOS"
+      ]
+    ];
+
     let deck = [...cards];
     let currentIndex = deck.length;
     let isPlaying = false;
@@ -723,6 +762,16 @@
         intervalId = setInterval(drawCard, speed);
       }
     }
+
+    document.getElementById("play-button").addEventListener("click", togglePlay);
+    document.getElementById("pause-button").addEventListener("click", pauseGame);
+    document.getElementById("resume-button").addEventListener("click", resumeGame);
+    document.getElementById("reset-button").addEventListener("click", resetGame);
+    document.getElementById("draw-button").addEventListener("click", () => {
+      pauseGame();
+      drawCard();
+    });
+    document.getElementById("speed-select").addEventListener("change", updateSpeed);
 
     document.getElementById("play-button").addEventListener("click", togglePlay);
     document.getElementById("pause-button").addEventListener("click", pauseGame);
