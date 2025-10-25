@@ -170,6 +170,10 @@
       text-transform: uppercase;
     }
 
+    #card-image .placeholder.no-image {
+      color: var(--accent);
+    }
+
     .controls-panel {
       background: #fff;
       border-radius: var(--border-radius);
@@ -392,6 +396,22 @@
       display: flex;
       gap: 18px;
       justify-content: center;
+      background: rgba(29, 29, 29, 0.05);
+      color: var(--muted);
+      font-weight: 500;
+      box-shadow: none;
+    }
+
+    .info-card ul {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .info-card li strong {
+      color: var(--primary-dark);
     }
 
     .share-buttons a {
@@ -480,7 +500,7 @@
         <p>Una experiencia digital vibrante para acompañar tus reuniones, celebraciones y momentos familiares.</p>
       </div>
       <div class="badge">
-        <span>48</span>
+        <span id="card-count">0</span>
         <span>Cartas<br>personalizadas</span>
       </div>
     </header>
@@ -556,115 +576,233 @@
 
   <audio id="sound-effect" src="https://www.myinstants.com/media/sounds/correct-answer.mp3"></audio>
   <script>
-    const cards = [
-      { name: "EL ACHIOTE", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL AGUACATE", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL AGUILA", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL AREQUIPE", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL ATOL", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL CHICHARRON", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL CHILE", image: "https://www.instagram.com/p/DPSWEtFjy6h/" },
-      { name: "EL CURTIDO", image: "imagenes/EL CURTIDO.png" },
-      { name: "EL GALLO", image: "imagenes/EL GALLO.png" },
-      { name: "EL KLASS", image: "imagenes/EL KLASS.png" },
-      { name: "EL LOROCO", image: "imagenes/EL LOROCO.png" },
-      { name: "EL MILAGRO", image: "imagenes/EL MILAGRO.png" },
-      { name: "EL MOLE", image: "imagenes/EL MOLE.png" },
-      { name: "EL NOPAL", image: "imagenes/EL NOPAL.png" },
-      { name: "EL PLATANO", image: "imagenes/EL PLATANO.png" },
-      { name: "EL QUESO", image: "imagenes/EL QUESO.png" },
-      { name: "EL SELLO ROJO", image: "imagenes/EL SELLO ROJO.png" },
-      { name: "EL TAMAL", image: "imagenes/EL TAMAL.png" },
-      { name: "EL TEQUENO", image: "imagenes/EL TEQUENO.png" },
-      { name: "LA AREPA", image: "imagenes/LA AREPA.png" },
-      { name: "LA BALEADA", image: "imagenes/LA BALEADA.png" },
-      { name: "LA CACHAPA", image: "imagenes/LA CACHAPA.png" },
-      { name: "LA CHICHA", image: "imagenes/LA CHICHA.png" },
-      { name: "LA COLOMBIANA", image: "imagenes/LA COLOMBIANA.png" },
-      { name: "LA CORONA", image: "imagenes/LA CORONA.png" },
-      { name: "LA COSTEÑA", image: "imagenes/LA COSTEÑA.png" },
-      { name: "LA CREMA", image: "imagenes/LA CREMA.png" },
-      { name: "LA JUANITA", image: "imagenes/LA JUANITA.png" },
-      { name: "LA LUPITA", image: "imagenes/LA LUPITA.png" },
-      { name: "LA MALTA", image: "imagenes/LA MALTA.png" },
-      { name: "LA MANTECA", image: "imagenes/LA MANTECA.png" },
-      { name: "LA MARUCHAN", image: "imagenes/LA MARUCHAN.png" },
-      { name: "LA MASECA", image: "imagenes/LA MASECA.png" },
-      { name: "LA MAYO", image: "imagenes/LA MAYO.png" },
-      { name: "LA PANELA", image: "imagenes/LA PANELA.png" },
-      { name: "LA VICTORIA", image: "imagenes/LA VICTORIA.png" },
-      { name: "LA YUCA", image: "imagenes/LA YUCA.png" },
-      { name: "LAS CHARRAS", image: "imagenes/LAS CHARRAS.png" },
-      { name: "LAS GUASCAS", image: "imagenes/LAS GUASCAS.png" },
-      { name: "LAS PUPUSAS", image: "imagenes/LAS PUPUSAS.png" },
-      { name: "LAS SABRITAS", image: "imagenes/LAS SABRITAS.png" },
-      { name: "LOS FRIJOLES", image: "imagenes/LOS FRIJOLES.png" },
-      { name: "LOS JARRITOS", image: "imagenes/LOS JARRITOS.png" },
-      { name: "LOS MADUROS", image: "imagenes/LOS MADUROS.png" },
-      { name: "LOS QUIPITOS", image: "imagenes/LOS QUIPITOS.png" },
-      { name: "LOS TAKIS", image: "imagenes/LOS TAKIS.png" },
-      { name: "LOS TOTOPOS", image: "imagenes/LOS TOTOPOS.png" },
-      { name: "LOS ZAMBOS", image: "imagenes/LOS ZAMBOS.png" }
+    const cardEntries = [
+      "EL ACHIOTE",
+      "EL AGUACATE",
+      "EL AGUILA",
+      "EL AREQUIPE",
+      "EL ATOL",
+      "EL CHICHARRON",
+      "EL CHILE",
+      "EL CURTIDO",
+      "EL GALLO",
+      "EL KLASS",
+      "EL LOROCO",
+      "EL MILAGRO",
+      "EL MOLE",
+      "EL NOPAL",
+      "EL PLATANO",
+      "EL QUESO",
+      "EL SELLO ROJO",
+      "EL TAMAL",
+      "EL TEQUENO",
+      "LA AREPA",
+      "LA BALEADA",
+      "LA CACHAPA",
+      "LA CHICHA",
+      "LA COLOMBIANA",
+      "LA CORONA",
+      "LA COSTEÑA",
+      "LA CREMA",
+      "LA JUANITA",
+      "LA LUPITA",
+      "LA MALTA",
+      "LA MANTECA",
+      "LA MARUCHAN",
+      "LA MASECA",
+      "LA MAYO",
+      "LA PANELA",
+      "LA VICTORIA",
+      "LA YUCA",
+      "LAS CHARRAS",
+      "LAS GUASCAS",
+      "LAS PUPUSAS",
+      "LAS SABRITAS",
+      "LOS FRIJOLES",
+      "LOS JARRITOS",
+      "LOS MADUROS",
+      "LOS QUIPITOS",
+      "LOS TAKIS",
+      "LOS TOTOPOS",
+      "LOS ZAMBOS"
     ];
 
-    const tableros = [
-      [
-        "EL ACHIOTE", "EL AGUACATE", "EL AGUILA", "EL AREQUIPE",
-        "EL ATOL", "EL CHICHARRON", "EL CHILE", "EL CURTIDO",
-        "EL GALLO", "EL KLASS", "EL LOROCO", "EL MILAGRO",
-        "EL MOLE", "EL NOPAL", "EL PLATANO", "EL QUESO"
-      ],
-      [
-        "EL SELLO ROJO", "EL TAMAL", "EL TEQUENO", "LA AREPA",
-        "LA BALEADA", "LA CACHAPA", "LA CHICHA", "LA COLOMBIANA",
-        "LA CORONA", "LA COSTEÑA", "LA CREMA", "LA JUANITA",
-        "LA LUPITA", "LA MALTA", "LA MANTECA", "LA MARUCHAN"
-      ],
-      [
-        "LA MASECA", "LA MAYO", "LA PANELA", "LA VICTORIA",
-        "LA YUCA", "LAS CHARRAS", "LAS GUASCAS", "LAS PUPUSAS",
-        "LAS SABRITAS", "LOS FRIJOLES", "LOS JARRITOS", "LOS MADUROS",
-        "LOS QUIPITOS", "LOS TAKIS", "LOS TOTOPOS", "LOS ZAMBOS"
-      ],
-      [
-        "EL ACHIOTE", "EL AREQUIPE", "EL CURTIDO", "EL GALLO",
-        "EL LOROCO", "EL MILAGRO", "EL NOPAL", "EL SELLO ROJO",
-        "LA CACHAPA", "LA COLOMBIANA", "LA COSTEÑA", "LA JUANITA",
-        "LA MASECA", "LAS CHARRAS", "LOS FRIJOLES", "LOS TAKIS"
-      ],
-      [
-        "EL AGUACATE", "EL CHILE", "EL PLATANO", "EL QUESO",
-        "EL TAMAL", "EL TEQUENO", "LA AREPA", "LA CHICHA",
-        "LA CORONA", "LA CREMA", "LA LUPITA", "LA MALTA",
-        "LAS SABRITAS", "LOS JARRITOS", "LOS MADUROS", "LOS ZAMBOS"
-      ],
-      [
-        "EL AREQUIPE", "EL ATOL", "EL CHICHARRON", "EL MOLE",
-        "EL NOPAL", "EL SELLO ROJO", "LA AREPA", "LA COSTEÑA",
-        "LA MANTECA", "LA MARUCHAN", "LA MAYO", "LA PANELA",
-        "LAS PUPUSAS", "LOS FRIJOLES", "LOS QUIPITOS", "LOS TOTOPOS"
-      ]
-    ];
+    const cards = cardEntries.map((entry) =>
+      typeof entry === "string" ? { name: entry } : entry
+    );
+
+    const DEFAULT_IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif"];
 
     let deck = [...cards];
     let currentIndex = deck.length;
     let isPlaying = false;
     let intervalId = null;
     let drawnCards = [];
+    let imageRequestId = 0;
 
-    function updateDrawnCards() {
-      const list = document.getElementById("drawn-cards");
-      if (!list) return;
+    const cardCountElement = document.getElementById("card-count");
+    const playButton = document.getElementById("play-button");
+    const pauseButton = document.getElementById("pause-button");
+    const resumeButton = document.getElementById("resume-button");
+    const drawButton = document.getElementById("draw-button");
+    const resetButton = document.getElementById("reset-button");
+    const speedSelect = document.getElementById("speed-select");
+    const cardImage = document.getElementById("card-image");
+    const cardNameElement = document.getElementById("card-name");
+    const drawnCardsList = document.getElementById("drawn-cards");
 
-      if (drawnCards.length === 0) {
-        list.innerHTML = "<li class=\"empty\">Aún no se han leído cartas.</li>";
+    if (cardCountElement) {
+      cardCountElement.textContent = cards.length.toString();
+    }
+
+    function buildImageCandidates(card) {
+      const candidates = [];
+      const pushCandidate = (url) => {
+        if (!url || candidates.includes(url)) return;
+        candidates.push(url);
+      };
+
+      if (card.image) {
+        pushCandidate(card.image);
+      }
+
+      if (card.file) {
+        const explicitPath = card.file.includes("/")
+          ? card.file
+          : `imagenes/${card.file}`;
+        pushCandidate(explicitPath);
+        pushCandidate(
+          explicitPath
+            .split("/")
+            .map((segment) => encodeURIComponent(segment))
+            .join("/")
+        );
+      }
+
+      const folder = (card.folder || "imagenes").replace(/\/+$/, "");
+      const encodedFolder = folder
+        .split("/")
+        .map((segment) => encodeURIComponent(segment))
+        .join("/");
+      const rawBaseName = (card.fileName || card.name || "").toString();
+      if (!rawBaseName) {
+        return candidates;
+      }
+
+      const candidateNames = [];
+      const addNameVariant = (value) => {
+        if (!value || candidateNames.includes(value)) return;
+        candidateNames.push(value);
+      };
+
+      addNameVariant(rawBaseName);
+
+      if (typeof rawBaseName.normalize === "function") {
+        const withoutDiacritics = rawBaseName
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/ñ/g, "n")
+          .replace(/Ñ/g, "N");
+        addNameVariant(withoutDiacritics);
+      }
+
+      addNameVariant(rawBaseName.toLowerCase());
+      addNameVariant(rawBaseName.toUpperCase());
+      addNameVariant(rawBaseName.replace(/\s+/g, "_"));
+      addNameVariant(rawBaseName.replace(/\s+/g, "-"));
+
+      const extensions = card.extensions || DEFAULT_IMAGE_EXTENSIONS;
+
+      candidateNames.forEach((nameVariant) => {
+        const encodedName = encodeURIComponent(nameVariant);
+        extensions.forEach((extension) => {
+          const encodedPath = `${encodedFolder}/${encodedName}.${extension}`;
+          pushCandidate(encodedPath);
+          const rawPath = `${folder}/${nameVariant}.${extension}`;
+          if (rawPath !== encodedPath) {
+            pushCandidate(rawPath);
+          }
+        });
+      });
+
+      return candidates;
+    }
+
+    function displayCardImage(card) {
+      const container = cardImage;
+      if (!container) return;
+
+      const requestId = ++imageRequestId;
+      container.dataset.requestId = requestId.toString();
+      container.classList.add("loading");
+      container.innerHTML = "";
+
+      const showPlaceholder = (message, extraClass = "") => {
+        if (container.dataset.requestId !== requestId.toString()) return;
+        container.innerHTML = "";
+        const placeholder = document.createElement("span");
+        placeholder.className = `placeholder${extraClass ? " " + extraClass : ""}`;
+        placeholder.textContent = message;
+        container.appendChild(placeholder);
+        container.classList.remove("loading");
+        delete container.dataset.requestId;
+      };
+
+      const renderImage = (src) => {
+        if (container.dataset.requestId !== requestId.toString()) return;
+        container.innerHTML = "";
+        const imageElement = document.createElement("img");
+        imageElement.src = src;
+        imageElement.alt = card.name;
+        container.appendChild(imageElement);
+        container.classList.remove("loading");
+        delete container.dataset.requestId;
+      };
+
+      const candidates = buildImageCandidates(card);
+      if (candidates.length === 0) {
+        showPlaceholder("Imagen no disponible", "no-image");
         return;
       }
 
-      list.innerHTML = drawnCards
+      const tryCandidate = (index) => {
+        if (container.dataset.requestId !== requestId.toString()) return;
+        if (index >= candidates.length) {
+          showPlaceholder("Imagen no disponible", "no-image");
+          return;
+        }
+        const testImage = new Image();
+        testImage.onload = () => renderImage(candidates[index]);
+        testImage.onerror = () => tryCandidate(index + 1);
+        testImage.src = candidates[index];
+      };
+
+      tryCandidate(0);
+    }
+
+    function playSoundEffect() {
+      const audio = document.getElementById("sound-effect");
+      if (!audio) return;
+      audio.currentTime = 0;
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise.catch(() => {});
+      }
+    }
+
+    function updateDrawnCards() {
+      if (!drawnCardsList) return;
+
+      if (drawnCards.length === 0) {
+        drawnCardsList.innerHTML = "<li class=\"empty\">Aún no se han leído cartas.</li>";
+        drawnCardsList.scrollTop = 0;
+        return;
+      }
+
+      drawnCardsList.innerHTML = drawnCards
         .map((card, index) => `<li><span class="index">${index + 1}</span><span>${card.name}</span></li>`)
         .join("");
-      list.scrollTop = list.scrollHeight;
+      drawnCardsList.scrollTop = drawnCardsList.scrollHeight;
     }
 
     function resetDrawnCards() {
@@ -673,33 +811,39 @@
     }
 
     function shuffleDeck() {
-      for (let i = currentIndex - 1; i > 0; i--) {
+      for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [deck[i], deck[j]] = [deck[j], deck[i]];
       }
+      currentIndex = deck.length;
     }
 
     function drawCard() {
       if (currentIndex === 0) {
         alert("¡Se han usado todas las cartas! Barajando de nuevo...");
         deck = [...cards];
-        currentIndex = deck.length;
         shuffleDeck();
         resetDrawnCards();
       }
+
+      if (deck.length === 0) return;
+
       currentIndex--;
       const card = deck[currentIndex];
-      document.getElementById("card-name").textContent = card.name;
-      const imageDiv = document.getElementById("card-image");
-      imageDiv.classList.add("loading");
-      imageDiv.innerHTML = `<img src="${card.image}" alt="${card.name}" onload="this.parentElement.classList.remove('loading')" onerror="this.src='https://via.placeholder.com/240x360?text=${encodeURIComponent(card.name)}'">`;
-      document.getElementById("sound-effect").play();
+      if (cardNameElement) {
+        cardNameElement.textContent = card.name;
+      }
+      displayCardImage(card);
+      playSoundEffect();
       drawnCards.push(card);
       updateDrawnCards();
       speakCard(card);
     }
 
     function speakCard(card) {
+      if (!("speechSynthesis" in window) || typeof SpeechSynthesisUtterance === "undefined") {
+        return;
+      }
       const utterance1 = new SpeechSynthesisUtterance(card.name);
       utterance1.lang = "es-MX";
       utterance1.rate = 0.9;
@@ -715,80 +859,96 @@
     function togglePlay() {
       if (isPlaying) return;
       isPlaying = true;
-      document.getElementById("play-button").style.display = "none";
-      document.getElementById("pause-button").style.display = "inline-block";
-      document.getElementById("resume-button").style.display = "none";
+      if (playButton) playButton.style.display = "none";
+      if (pauseButton) pauseButton.style.display = "inline-block";
+      if (resumeButton) resumeButton.style.display = "none";
       drawCard();
-      const speed = parseInt(document.getElementById("speed-select").value);
+      const speed = speedSelect ? parseInt(speedSelect.value, 10) : 5000;
       intervalId = setInterval(drawCard, speed);
     }
 
     function pauseGame() {
       if (!isPlaying) return;
       clearInterval(intervalId);
+      intervalId = null;
       isPlaying = false;
-      document.getElementById("pause-button").style.display = "none";
-      document.getElementById("resume-button").style.display = "inline-block";
+      if (pauseButton) pauseButton.style.display = "none";
+      if (resumeButton) resumeButton.style.display = "inline-block";
     }
 
     function resumeGame() {
       if (isPlaying) return;
       isPlaying = true;
-      document.getElementById("pause-button").style.display = "inline-block";
-      document.getElementById("resume-button").style.display = "none";
-      const speed = parseInt(document.getElementById("speed-select").value);
+      if (pauseButton) pauseButton.style.display = "inline-block";
+      if (resumeButton) resumeButton.style.display = "none";
+      const speed = speedSelect ? parseInt(speedSelect.value, 10) : 5000;
       intervalId = setInterval(drawCard, speed);
     }
 
     function resetGame() {
       clearInterval(intervalId);
+      intervalId = null;
       isPlaying = false;
       deck = [...cards];
-      currentIndex = deck.length;
       shuffleDeck();
-      document.getElementById("card-name").textContent = "";
-      document.getElementById("card-image").innerHTML = "<span class='placeholder'>Selecciona una carta</span>";
-      document.getElementById("card-image").classList.remove("loading");
-      document.getElementById("play-button").style.display = "inline-block";
-      document.getElementById("pause-button").style.display = "none";
-      document.getElementById("resume-button").style.display = "none";
+      if (cardNameElement) {
+        cardNameElement.textContent = "";
+      }
+      if (cardImage) {
+        imageRequestId += 1;
+        cardImage.dataset.requestId = "";
+        cardImage.classList.remove("loading");
+        cardImage.innerHTML = "";
+        const placeholder = document.createElement("span");
+        placeholder.className = "placeholder";
+        placeholder.textContent = "Selecciona una carta";
+        cardImage.appendChild(placeholder);
+      }
+      if (playButton) playButton.style.display = "inline-block";
+      if (pauseButton) pauseButton.style.display = "none";
+      if (resumeButton) resumeButton.style.display = "none";
+      if ("speechSynthesis" in window && typeof window.speechSynthesis.cancel === "function") {
+        window.speechSynthesis.cancel();
+      }
       resetDrawnCards();
     }
 
     function updateSpeed() {
       if (isPlaying) {
         clearInterval(intervalId);
-        const speed = parseInt(document.getElementById("speed-select").value);
+        const speed = speedSelect ? parseInt(speedSelect.value, 10) : 5000;
         intervalId = setInterval(drawCard, speed);
       }
     }
 
-    document.getElementById("play-button").addEventListener("click", togglePlay);
-    document.getElementById("pause-button").addEventListener("click", pauseGame);
-    document.getElementById("resume-button").addEventListener("click", resumeGame);
-    document.getElementById("reset-button").addEventListener("click", resetGame);
-    document.getElementById("draw-button").addEventListener("click", () => {
-      pauseGame();
-      drawCard();
-    });
-    document.getElementById("speed-select").addEventListener("change", updateSpeed);
-
-    document.getElementById("play-button").addEventListener("click", togglePlay);
-    document.getElementById("pause-button").addEventListener("click", pauseGame);
-    document.getElementById("resume-button").addEventListener("click", resumeGame);
-    document.getElementById("reset-button").addEventListener("click", resetGame);
-    document.getElementById("draw-button").addEventListener("click", () => {
-      pauseGame();
-      drawCard();
-    });
-    document.getElementById("speed-select").addEventListener("change", updateSpeed);
+    if (playButton) {
+      playButton.addEventListener("click", togglePlay);
+    }
+    if (pauseButton) {
+      pauseButton.addEventListener("click", pauseGame);
+    }
+    if (resumeButton) {
+      resumeButton.addEventListener("click", resumeGame);
+    }
+    if (resetButton) {
+      resetButton.addEventListener("click", resetGame);
+    }
+    if (drawButton) {
+      drawButton.addEventListener("click", () => {
+        pauseGame();
+        drawCard();
+      });
+    }
+    if (speedSelect) {
+      speedSelect.addEventListener("change", updateSpeed);
+    }
 
     // Initialize
     shuffleDeck();
-    window.onload = () => {
-      resetDrawnCards();
-      document.getElementById("card-image").classList.remove("loading");
-    };
+    resetDrawnCards();
+    if (cardImage) {
+      cardImage.classList.remove("loading");
+    }
   </script>
 </body>
 </html>
